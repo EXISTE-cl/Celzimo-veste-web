@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cesta de Compras | CELZIMO VESTE</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- Tabler Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="basket-page">
+    
+    <!-- Simplified Checkout Header -->
+    <header class="checkout-header">
+        <div class="container header-container">
+            <a href="index.html" class="brand-logo">
+                <img src="logo.jpg" alt="Celzimo Veste Logo" class="main-logo-img">
+            </a>
+            
+            <!-- Checkout Progress Steps -->
+            <div class="checkout-steps">
+                <div class="step active">
+                    <span class="step-num">1</span>
+                    <span class="step-text">Carro</span>
+                </div>
+                <div class="step-separator"></div>
+                <div class="step">
+                    <span class="step-num">2</span>
+                    <span class="step-text">Despacho</span>
+                </div>
+                <div class="step-separator"></div>
+                <div class="step">
+                    <span class="step-num">3</span>
+                    <span class="step-text">Pago</span>
+                </div>
+            </div>
+            
+            <div class="checkout-security hide-mobile">
+                <i class="ti ti-lock"></i> Compra 100% Segura
+            </div>
+        </div>
+    </header>
+
+    <main class="container basket-main-content">
+        <div class="basket-layout">
+            <!-- Left Side: Product List -->
+            <section class="basket-left-col">
+                <h1 class="basket-title">Carro de Compras (<span id="basket-items-count">0</span>)</h1>
+                
+                <!-- Free Shipping Banner -->
+                <div class="shipping-promo-banner" id="shipping-promo">
+                    <div class="promo-icon"><i class="ti ti-truck-delivery"></i></div>
+                    <div class="promo-info">
+                        <p class="promo-title" id="promo-shipping-msg">¡Estás a solo $150.000 de obtener envío GRATIS!</p>
+                        <div class="progress-bar-bg">
+                            <div class="progress-bar-fill" id="shipping-progress" style="width: 0%;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="basket-items-list" id="basket-items-list">
+                    <!-- Items will be injected dynamically -->
+                </div>
+                
+                <!-- Empty basket state -->
+                <div class="empty-basket-state" id="empty-basket" style="display: none;">
+                    <i class="ti ti-shopping-cart-x"></i>
+                    <h2>Tu carro está vacío</h2>
+                    <p>Explora nuestras colecciones exclusivas de denim, chaquetas y accesorios premium y encuentra tu estilo ideal.</p>
+                    <a href="shop.html" class="btn btn-primary">Ver Catálogo</a>
+                </div>
+            </section>
+
+            <!-- Right Side: Order Summary -->
+            <section class="basket-right-col" id="basket-summary-panel">
+                <div class="summary-card">
+                    <h3>Resumen de la orden</h3>
+                    
+                    <div class="summary-details">
+                        <div class="summary-row">
+                            <span>Productos (<span id="summary-prod-qty">0</span>)</span>
+                            <span id="summary-subtotal">$0</span>
+                        </div>
+                        <div class="summary-row discount-row" id="summary-discount-row" style="display: none;">
+                            <span>Descuento (<span id="coupon-tag-name"></span>)</span>
+                            <span class="discount-amount" id="summary-discount">-$0</span>
+                        </div>
+                        <div class="summary-row">
+                            <span>Envío</span>
+                            <span id="summary-shipping" class="free-badge">Gratis</span>
+                        </div>
+                        
+                        <hr class="summary-divider">
+                        
+                        <div class="summary-row total-row">
+                            <span>Total estimado</span>
+                            <span id="summary-total">$0</span>
+                        </div>
+                    </div>
+
+                    <!-- Discount Code Section -->
+                    <div class="coupon-section">
+                        <button class="coupon-toggle-btn" id="coupon-toggle">
+                            ¿Tienes un código de descuento? <i class="ti ti-chevron-down"></i>
+                        </button>
+                        <div class="coupon-input-wrapper" id="coupon-wrapper" style="display: none;">
+                            <div class="form-group flex-group">
+                                <input type="text" id="coupon-code" class="form-control" placeholder="Escribe tu cupón (ej: CELZIMO10)" style="margin-bottom: 0;">
+                                <button class="btn btn-primary" id="apply-coupon-btn">Aplicar</button>
+                            </div>
+                            <span class="coupon-feedback" id="coupon-message"></span>
+                        </div>
+                    </div>
+
+                    <!-- Checkout Button -->
+                    <button class="btn btn-primary btn-block btn-checkout-main" id="btn-proceed-checkout">
+                        Ir a comprar
+                    </button>
+                    
+                    <a href="shop.html" class="continue-link">&larr; Seguir comprando</a>
+                </div>
+
+                <!-- Trust Badges -->
+                <div class="trust-panel">
+                    <div class="trust-item">
+                        <i class="ti ti-shield-check"></i>
+                        <div>
+                            <h4>Garantía Celzimo</h4>
+                            <p>Cambios y devoluciones sin costo durante los primeros 30 días.</p>
+                        </div>
+                    </div>
+                    <div class="trust-item">
+                        <i class="ti ti-credit-card"></i>
+                        <div>
+                            <h4>Métodos de pago aceptados</h4>
+                            <div class="payment-icons">
+                                <i class="ti ti-brand-visa" title="Visa"></i>
+                                <i class="ti ti-brand-mastercard" title="Mastercard"></i>
+                                <span class="custom-card-icon" title="CMR Falabella">CMR</span>
+                                <span class="custom-card-icon" title="Redcompra / Webpay">Webpay</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Interactive Checkout Sim Modal (Multi-step checkout) -->
+    <div class="modal-overlay" id="checkout-modal-overlay"></div>
+    <div class="checkout-modal" id="checkout-modal">
+        <div class="modal-header">
+            <h3>Finalizar Compra</h3>
+            <button class="close-btn" id="close-checkout-modal"><i class="ti ti-x"></i></button>
+        </div>
+        
+        <!-- Tab Indicators -->
+        <div class="modal-tabs">
+            <div class="modal-tab active" id="tab-indicator-delivery">1. Envío</div>
+            <div class="modal-tab" id="tab-indicator-payment">2. Pago</div>
+            <div class="modal-tab" id="tab-indicator-confirm">3. Confirmación</div>
+        </div>
+
+        <div class="modal-body">
+            <!-- Step 1: Delivery Details -->
+            <div class="modal-step-content active" id="modal-step-delivery">
+                <form id="delivery-form">
+                    <h4 class="step-title">Datos de Despacho</h4>
+                    <div class="form-row">
+                        <div class="form-group flex-1">
+                            <label for="checkout-name">Nombre Completo</label>
+                            <input type="text" id="checkout-name" class="form-control" required placeholder="Juan Pérez">
+                        </div>
+                        <div class="form-group flex-1">
+                            <label for="checkout-phone">Teléfono de contacto</label>
+                            <input type="tel" id="checkout-phone" class="form-control" required placeholder="+56 9 1234 5678">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="checkout-region">Región</label>
+                        <select id="checkout-region" class="form-control" required>
+                            <option value="">Selecciona tu Región</option>
+                            <option value="metropolitana" selected>Región Metropolitana de Santiago</option>
+                            <option value="valparaiso">Región de Valparaíso</option>
+                            <option value="biobio">Región del Biobío</option>
+                            <option value="antofagasta">Región de Antofagasta</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="checkout-commune">Comuna</label>
+                        <select id="checkout-commune" class="form-control" required>
+                            <option value="">Selecciona tu Comuna</option>
+                            <option value="santiago" selected>Santiago Centro</option>
+                            <option value="las-condes">Las Condes</option>
+                            <option value="providencia">Providencia</option>
+                            <option value="vitacura">Vitacura</option>
+                            <option value="nunoa">Ñuñoa</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="checkout-address">Dirección de Despacho</label>
+                        <input type="text" id="checkout-address" class="form-control" required placeholder="Av. Providencia 1234, Depto 402">
+                    </div>
+                    
+                    <!-- Document Type Selector (Boleta / Factura) -->
+                    <div class="form-group">
+                        <label style="font-weight: 600; margin-bottom: 8px; display: block;">Tipo de Documento</label>
+                        <div class="document-type-selector">
+                            <label class="doc-type-label active" id="label-boleta">
+                                <input type="radio" name="document-type" value="boleta" checked>
+                                <span>Boleta</span>
+                            </label>
+                            <label class="doc-type-label" id="label-factura">
+                                <input type="radio" name="document-type" value="factura">
+                                <span>Factura</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Factura Fields (Hidden by default) -->
+                    <div class="factura-details-wrapper" id="factura-details" style="display: none;">
+                        <h4 class="step-title" style="margin-top: 25px; font-size: 1rem; border-top: 1px solid var(--color-border); padding-top: 15px; margin-bottom: 15px;">Datos de Facturación</h4>
+                        <div class="form-row">
+                            <div class="form-group flex-1">
+                                <label for="factura-rut">RUT de la Empresa</label>
+                                <input type="text" id="factura-rut" class="form-control" placeholder="12.345.678-9">
+                            </div>
+                            <div class="form-group flex-1">
+                                <label for="factura-razon">Razón Social</label>
+                                <input type="text" id="factura-razon" class="form-control" placeholder="Celzimo Chile SpA">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="factura-giro">Giro Comercial</label>
+                            <input type="text" id="factura-giro" class="form-control" placeholder="Venta de prendas de vestir">
+                        </div>
+                        <div class="form-group checkbox-group" style="margin-bottom: 15px;">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="factura-same-address" checked>
+                                <span>¿La dirección de facturación es la misma de despacho?</span>
+                            </label>
+                        </div>
+                        <div class="form-group" id="factura-address-group" style="display: none;">
+                            <label for="factura-address">Dirección de Facturación</label>
+                            <input type="text" id="factura-address" class="form-control" placeholder="Av. Andrés Bello 2345, Oficina 1202">
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-block mt-3">Continuar al Pago</button>
+                </form>
+            </div>
+
+            <!-- Step 2: Payment Details -->
+            <div class="modal-step-content" id="modal-step-payment">
+                <form id="payment-form">
+                    <h4 class="step-title">Información de Pago</h4>
+                    <div class="payment-method-selector">
+                        <label class="payment-method-label active">
+                            <input type="radio" name="payment-method" value="credit" checked>
+                            <span>Tarjeta de Crédito / Débito</span>
+                        </label>
+                        <label class="payment-method-label">
+                            <input type="radio" name="payment-method" value="cmr">
+                            <span>Tarjeta CMR Falabella</span>
+                        </label>
+                    </div>
+                    
+                    <!-- Visual Credit Card Representation -->
+                    <div class="visual-card">
+                        <div class="card-logo">CELZIMO</div>
+                        <div class="card-chip"><i class="ti ti-cpu"></i></div>
+                        <div class="card-number-display" id="card-num-disp">•••• •••• •••• ••••</div>
+                        <div class="card-bottom">
+                            <div class="card-holder-display" id="card-holder-disp">NOMBRE COMPLETO</div>
+                            <div class="card-expiry-display" id="card-exp-disp">MM/AA</div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="card-number">Número de Tarjeta</label>
+                        <input type="text" id="card-number" class="form-control" placeholder="4556 1234 5678 9012" maxlength="19" required>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group flex-2">
+                            <label for="card-holder">Titular de la Tarjeta</label>
+                            <input type="text" id="card-holder" class="form-control" placeholder="Juan Pérez" required>
+                        </div>
+                        <div class="form-group flex-1">
+                            <label for="card-expiry">Expiración</label>
+                            <input type="text" id="card-expiry" class="form-control" placeholder="12/29" maxlength="5" required>
+                        </div>
+                        <div class="form-group flex-1">
+                            <label for="card-cvv">CVV</label>
+                            <input type="password" id="card-cvv" class="form-control" placeholder="123" maxlength="3" required>
+                        </div>
+                    </div>
+
+                    <div class="secure-checkout-summary">
+                        <span>Total a pagar:</span>
+                        <strong id="modal-payment-total">$0</strong>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-block mt-3" id="btn-pay-now">Pagar e Iniciar Orden</button>
+                </form>
+            </div>
+
+            <!-- Step 3: Success Confirmation -->
+            <div class="modal-step-content" id="modal-step-confirm" style="text-align: center; padding: 30px 10px;">
+                <div class="success-icon-badge">
+                    <i class="ti ti-circle-check"></i>
+                </div>
+                <h3 class="success-title">¡Compra Exitosa!</h3>
+                <p class="success-text">Hemos procesado tu pago correctamente. Se ha enviado el comprobante de compra y los detalles de seguimiento al correo electrónico registrado.</p>
+                <div class="order-number-box">
+                    <span>Número de Pedido:</span>
+                    <strong id="success-order-number">CV-582910</strong>
+                </div>
+                <button class="btn btn-primary mt-4" id="btn-finish-all" style="min-width: 200px;">Volver al Inicio</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Simple footer -->
+    <footer class="checkout-footer-simple">
+        <div class="container">
+            <p>&copy; 2026 CELZIMO VESTE. Todos los derechos reservados. | Para ayuda, contáctanos a contacto@celzimoveste.cl</p>
+        </div>
+    </footer>
+
+    <script src="data.js"></script>
+    <script src="basket.js"></script>
+</body>
+</html>
