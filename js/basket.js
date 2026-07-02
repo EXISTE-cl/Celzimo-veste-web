@@ -569,3 +569,4 @@ document.addEventListener('DOMContentLoaded', () => {
     // Render initially
     renderBasket();
 });
+

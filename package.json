@@ -1,0 +1,15 @@
+{
+  "name": "celzimo-veste",
+  "version": "1.0.0",
+  "description": "E-commerce estático para Celzimo Veste",
+  "main": "index.html",
+  "scripts": {
+    "dev": "serve .",
+    "start": "serve ."
+  },
+  "devDependencies": {
+    "serve": "^14.2.1"
+  },
+  "author": "",
+  "license": "ISC"
+}

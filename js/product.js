@@ -267,3 +267,4 @@ window.selectProductPageColor = (event, element, newSrc, index) => {
         mainImg.style.filter = `hue-rotate(${index * 45}deg)`;
     }
 };
+
