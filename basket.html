@@ -9,7 +9,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
     <!-- Tabler Icons -->
-    <link rel="stylesheet" href="css/https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body class="basket-page">
@@ -206,6 +206,31 @@
                         <input type="text" id="checkout-address" class="form-control" required placeholder="Av. Providencia 1234, Depto 402">
                     </div>
                     
+                    <!-- Método de Despacho Blue Express -->
+                    <div class="form-group">
+                        <label style="font-weight: 600; margin-bottom: 8px; display: block;">Método de Despacho (Courier: Blue Express)</label>
+                        <div class="shipping-method-selector">
+                            <label class="shipping-method-label active" id="label-ship-home">
+                                <input type="radio" name="shipping-method" value="home" checked>
+                                <span><i class="ti ti-truck"></i> Domicilio</span>
+                            </label>
+                            <label class="shipping-method-label" id="label-ship-pickup">
+                                <input type="radio" name="shipping-method" value="pickup">
+                                <span><i class="ti ti-building-store"></i> Punto Blue Express</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Selector de Punto de Retiro Blue Express (Hidden by default) -->
+                    <div class="pickup-details-wrapper" id="pickup-details" style="display: none;">
+                        <div class="form-group">
+                            <label for="checkout-pickup-point">Selecciona tu Punto Blue Express</label>
+                            <select id="checkout-pickup-point" class="form-control">
+                                <option value="">Selecciona una opción</option>
+                            </select>
+                        </div>
+                    </div>
+                    
                     <!-- Document Type Selector (Boleta / Factura) -->
                     <div class="form-group">
                         <label style="font-weight: 600; margin-bottom: 8px; display: block;">Tipo de Documento</label>
@@ -315,11 +340,22 @@
                 </div>
                 <h3 class="success-title">¡Compra Exitosa!</h3>
                 <p class="success-text">Hemos procesado tu pago correctamente. Se ha enviado el comprobante de compra y los detalles de seguimiento al correo electrónico registrado.</p>
-                <div class="order-number-box">
+                <div class="order-number-box" style="margin-bottom: 15px;">
                     <span>Número de Pedido:</span>
                     <strong id="success-order-number">CV-582910</strong>
                 </div>
-                <button class="btn btn-primary mt-4" id="btn-finish-all" style="min-width: 200px;">Volver al Inicio</button>
+                <!-- Información de seguimiento de Blue Express -->
+                <div class="tracking-info-box" style="margin-top: 15px; margin-bottom: 20px; padding: 15px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); border-radius: 8px;">
+                    <div style="display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 8px;">
+                        <span style="background: #0052cc; color: white; padding: 3px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.5px;">BLUE EXPRESS</span>
+                        <span style="font-size: 0.85rem; color: var(--color-text-muted);">Seguimiento de envío</span>
+                    </div>
+                    <div style="font-size: 1.15rem; font-weight: bold; margin-bottom: 12px; color: var(--color-text-main);" id="success-tracking-code">BX-12345678-CL</div>
+                    <button type="button" class="btn btn-outline btn-sm" id="btn-track-shipping" style="padding: 8px 16px; font-size: 0.8rem; display: inline-flex; align-items: center; gap: 6px;">
+                        <i class="ti ti-timeline"></i> Rastrear Envío en Tiempo Real
+                    </button>
+                </div>
+                <button class="btn btn-primary mt-3" id="btn-finish-all" style="min-width: 200px;">Volver al Inicio</button>
             </div>
         </div>
     </div>
@@ -330,6 +366,61 @@
             <p>&copy; 2026 CELZIMO VESTE. Todos los derechos reservados. | Para ayuda, contáctanos a contacto@celzimoveste.cl</p>
         </div>
     </footer>
+
+    <!-- Blue Express Tracking Modal -->
+    <div class="modal-overlay" id="tracking-modal-overlay"></div>
+    <div class="checkout-modal tracking-modal" id="tracking-modal" style="max-width: 480px;">
+        <div class="modal-header" style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+            <div style="display: flex; align-items: center; gap: 8px;">
+                <div style="width: 24px; height: 24px; background: #0052cc; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-weight: bold; color: white; font-size: 0.75rem;">BX</div>
+                <h3 style="font-size: 1.1rem; letter-spacing: 0.5px;">Rastreo Blue Express</h3>
+            </div>
+            <button class="close-btn" id="close-tracking-modal"><i class="ti ti-x"></i></button>
+        </div>
+        <div class="modal-body" style="padding: 20px;">
+            <div style="text-align: center; margin-bottom: 25px; padding-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.05);">
+                <span style="font-size: 0.85rem; color: var(--color-text-muted);">Código de Seguimiento</span>
+                <h4 style="font-size: 1.3rem; color: var(--color-gold); margin-top: 4px;" id="track-modal-code">BX-00000000-CL</h4>
+                <div style="margin-top: 8px; font-size: 0.85rem;" id="track-modal-status-summary">Estado: <strong>Listo para despacho</strong></div>
+            </div>
+            
+            <!-- Tracking Timeline -->
+            <div class="tracking-timeline">
+                <div class="timeline-item active">
+                    <div class="timeline-badge"><i class="ti ti-package"></i></div>
+                    <div class="timeline-content">
+                        <h4>Pedido Recibido</h4>
+                        <p>Hemos confirmado tu orden y preparado tu paquete en nuestra bodega Celzimo Veste.</p>
+                        <span class="timeline-time" id="time-step-1">Hace unos instantes</span>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-badge"><i class="ti ti-home-check"></i></div>
+                    <div class="timeline-content">
+                        <h4>Recibido por Blue Express</h4>
+                        <p>El courier Blue Express ha retirado el paquete y se encuentra en camino al centro de distribución principal.</p>
+                        <span class="timeline-time" id="time-step-2">Pendiente</span>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-badge"><i class="ti ti-truck-delivery"></i></div>
+                    <div class="timeline-content">
+                        <h4>En Tránsito</h4>
+                        <p>El paquete está en viaje hacia tu comuna/punto de entrega seleccionado.</p>
+                        <span class="timeline-time" id="time-step-3">Pendiente</span>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-badge"><i class="ti ti-circle-check"></i></div>
+                    <div class="timeline-content">
+                        <h4>Entregado</h4>
+                        <p>El envío ha sido entregado en la dirección proporcionada o retirado en el punto Blue Express.</p>
+                        <span class="timeline-time" id="time-step-4">Pendiente</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script src="js/data.js"></script>
     <script src="js/basket.js"></script>

@@ -5,6 +5,39 @@ document.addEventListener('DOMContentLoaded', () => {
     let appliedCoupon = null;
     let couponDiscountPercent = 0;
     
+    // Blue Express shipping state
+    let selectedRegion = 'metropolitana';
+    let selectedCommune = 'santiago';
+    let selectedShippingMethod = 'home'; // 'home' or 'pickup'
+    let selectedPickupPoint = '';
+    let trackingCodeGenerated = '';
+
+    const BLUE_EXPRESS_POINTS = {
+        'santiago': [
+            { id: 'stgo-1', name: 'Punto Blue Express - Kiosko Huérfanos (Huérfanos 1020)' },
+            { id: 'stgo-2', name: 'Punto Blue Express - Farmacia Ahumada (Paseo Ahumada 250)' },
+            { id: 'stgo-3', name: 'Punto Blue Express - Bazar Central (San Diego 150)' }
+        ],
+        'las-condes': [
+            { id: 'lc-1', name: 'Punto Blue Express - Minimarket Apoquindo (Av. Apoquindo 5500)' },
+            { id: 'lc-2', name: 'Punto Blue Express - Kiosko Manquehue (Av. Manquehue Sur 320)' },
+            { id: 'lc-3', name: 'Punto Blue Express - Tabaquería Vitacura (Av. Vitacura 3800)' }
+        ],
+        'providencia': [
+            { id: 'prov-1', name: 'Punto Blue Express - Librería Providencia (Av. Providencia 2200)' },
+            { id: 'prov-2', name: 'Punto Blue Express - Farmacia Cruz Verde (Pedro de Valdivia 150)' },
+            { id: 'prov-3', name: 'Punto Blue Express - Kiosko Los Leones (Av. Los Leones 120)' }
+        ],
+        'vitacura': [
+            { id: 'vit-1', name: 'Punto Blue Express - Tabaquería Vitacura (Av. Vitacura 4500)' },
+            { id: 'vit-2', name: 'Punto Blue Express - Minimarket Américo Vespucio (Av. Américo Vespucio 1800)' }
+        ],
+        'nunoa': [
+            { id: 'nun-1', name: 'Punto Blue Express - Bazar Irarrázaval (Av. Irarrázaval 3200)' },
+            { id: 'nun-2', name: 'Punto Blue Express - Kiosko Plaza Ñuñoa (Plaza Ñuñoa 15)' }
+        ]
+    };
+    
     // shipping delivery types per product
     // Key: product ID, Value: 'delivery' or 'pickup'
     let deliveryChoices = {};
@@ -142,23 +175,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 <!-- Shipping / Pickup choice section (Falabella style) -->
                 <div class="item-delivery-selector">
-                    <div class="delivery-option-box ${isDelivery ? 'active' : ''}" data-id="${item.id}" data-type="delivery">
-                        <input type="radio" name="delivery-choice-${item.id}" id="del-${item.id}" ${isDelivery ? 'checked' : ''}>
+                    <div class="delivery-option-box active" data-id="${item.id}" data-type="delivery">
+                        <input type="radio" name="delivery-choice-${item.id}" id="del-${item.id}" checked>
                         <label for="del-${item.id}">
                             <i class="ti ti-truck"></i>
                             <div>
                                 <strong>Despacho a domicilio</strong>
                                 <span class="delivery-status">Llega mañana</span>
-                            </div>
-                        </label>
-                    </div>
-                    <div class="delivery-option-box ${!isDelivery ? 'active' : ''}" data-id="${item.id}" data-type="pickup">
-                        <input type="radio" name="delivery-choice-${item.id}" id="pick-${item.id}" ${!isDelivery ? 'checked' : ''}>
-                        <label for="pick-${item.id}">
-                            <i class="ti ti-building-store"></i>
-                            <div>
-                                <strong>Retiro en tienda</strong>
-                                <span class="delivery-status">Disponible hoy - Gratis</span>
                             </div>
                         </label>
                     </div>
@@ -247,31 +270,28 @@ document.addEventListener('DOMContentLoaded', () => {
             shippingProgress.style.width = `${percent}%`;
         }
 
-        // Calculate shipping costs
-        // Let's say shipping is $4.990 per item marked as 'delivery' if not free shipping.
+        // Calculate shipping costs with Blue Express
         let shippingTotal = 0;
-        let hasDeliveries = false;
-        
-        cart.forEach(item => {
-            if (deliveryChoices[item.id] === 'delivery') {
-                hasDeliveries = true;
-                if (!isShippingFree) {
-                    shippingTotal += 4990;
+        if (cart.length > 0) {
+            if (!isShippingFree) {
+                const isRM = selectedRegion === 'metropolitana';
+                const isHome = selectedShippingMethod === 'home';
+                
+                if (isRM) {
+                    shippingTotal = isHome ? 3990 : 2990;
+                } else {
+                    shippingTotal = isHome ? 5990 : 4990;
                 }
             }
-        });
+        }
 
-        if (hasDeliveries) {
-            if (isShippingFree) {
-                summaryShipping.innerText = 'Gratis';
-                summaryShipping.className = 'free-badge';
-            } else {
-                summaryShipping.innerText = formatCurrency(shippingTotal);
-                summaryShipping.classList.remove('free-badge');
-            }
-        } else {
+        if (isShippingFree) {
             summaryShipping.innerText = 'Gratis';
             summaryShipping.className = 'free-badge';
+        } else {
+            const methodLabel = selectedShippingMethod === 'home' ? 'Domicilio (Blue Express)' : 'Punto Blue Express';
+            summaryShipping.innerHTML = `${formatCurrency(shippingTotal)} <span style="font-size: 0.75rem; color: var(--color-text-muted); font-weight: normal; display: block; text-align: right; margin-top: 2px;">${methodLabel}</span>`;
+            summaryShipping.classList.remove('free-badge');
         }
 
         // Apply discount coupon
@@ -464,10 +484,105 @@ document.addEventListener('DOMContentLoaded', () => {
     if (radioFactura) radioFactura.addEventListener('change', updateDocumentTypeUI);
     if (facturaSameAddress) facturaSameAddress.addEventListener('change', updateFacturaAddressRequired);
 
+    // Blue Express UI and logic
+    const selectRegion = document.getElementById('checkout-region');
+    const selectCommune = document.getElementById('checkout-commune');
+    const pickupDetails = document.getElementById('pickup-details');
+    const selectPickupPoint = document.getElementById('checkout-pickup-point');
+    const labelShipHome = document.getElementById('label-ship-home');
+    const labelShipPickup = document.getElementById('label-ship-pickup');
+
+    const populatePickupPoints = (commune) => {
+        if (!selectPickupPoint) return;
+        selectPickupPoint.innerHTML = '<option value="">Selecciona tu Punto Blue Express</option>';
+        
+        if (BLUE_EXPRESS_POINTS[commune]) {
+            BLUE_EXPRESS_POINTS[commune].forEach(point => {
+                const opt = document.createElement('option');
+                opt.value = point.id;
+                opt.textContent = point.name;
+                selectPickupPoint.appendChild(opt);
+            });
+        } else {
+            const opt = document.createElement('option');
+            opt.value = 'fallback';
+            opt.textContent = 'Punto Blue Express - Centro de Distribución Comunal';
+            selectPickupPoint.appendChild(opt);
+        }
+    };
+
+    // Initialize pickup points
+    populatePickupPoints('santiago');
+
+    if (selectRegion) {
+        selectRegion.addEventListener('change', (e) => {
+            selectedRegion = e.target.value;
+            calculateSummary();
+        });
+    }
+
+    if (selectCommune) {
+        selectCommune.addEventListener('change', (e) => {
+            selectedCommune = e.target.value;
+            populatePickupPoints(selectedCommune);
+            calculateSummary();
+        });
+    }
+
+    const updateShippingMethodUI = () => {
+        const radioHomeChecked = document.querySelector('input[name="shipping-method"][value="home"]').checked;
+        if (radioHomeChecked) {
+            selectedShippingMethod = 'home';
+            if (labelShipHome) labelShipHome.classList.add('active');
+            if (labelShipPickup) labelShipPickup.classList.remove('active');
+            if (pickupDetails) pickupDetails.style.display = 'none';
+            if (selectPickupPoint) selectPickupPoint.required = false;
+        } else {
+            selectedShippingMethod = 'pickup';
+            if (labelShipPickup) labelShipPickup.classList.add('active');
+            if (labelShipHome) labelShipHome.classList.remove('active');
+            if (pickupDetails) pickupDetails.style.display = 'block';
+            if (selectPickupPoint) selectPickupPoint.required = true;
+        }
+        calculateSummary();
+    };
+
+    const shipHomeRadio = document.querySelector('input[name="shipping-method"][value="home"]');
+    const shipPickupRadio = document.querySelector('input[name="shipping-method"][value="pickup"]');
+    if (shipHomeRadio) shipHomeRadio.addEventListener('change', updateShippingMethodUI);
+    if (shipPickupRadio) shipPickupRadio.addEventListener('change', updateShippingMethodUI);
+
+    // Also support clicking labels directly
+    if (labelShipHome) {
+        labelShipHome.addEventListener('click', () => {
+            const input = labelShipHome.querySelector('input');
+            if (input) {
+                input.checked = true;
+                updateShippingMethodUI();
+            }
+        });
+    }
+    if (labelShipPickup) {
+        labelShipPickup.addEventListener('click', () => {
+            const input = labelShipPickup.querySelector('input');
+            if (input) {
+                input.checked = true;
+                updateShippingMethodUI();
+            }
+        });
+    }
+
     // Step 1: Submit delivery details
     if (deliveryForm) {
         deliveryForm.addEventListener('submit', (e) => {
             e.preventDefault();
+            
+            // Validation
+            if (selectedShippingMethod === 'pickup' && selectPickupPoint && !selectPickupPoint.value) {
+                alert('Por favor selecciona un Punto Blue Express para el retiro.');
+                return;
+            }
+            
             // Fill card holder with name inputted
             const nameInput = document.getElementById('checkout-name').value;
             cardHolderInput.value = nameInput.toUpperCase();
@@ -525,6 +640,13 @@ document.addEventListener('DOMContentLoaded', () => {
                     successOrderNumber.innerText = orderNum;
                 }
 
+                // Generate Blue Express tracking code
+                trackingCodeGenerated = 'BX-' + Math.floor(10000000 + Math.random() * 90000000) + '-CL';
+                const successTrackingCode = document.getElementById('success-tracking-code');
+                if (successTrackingCode) {
+                    successTrackingCode.innerText = trackingCodeGenerated;
+                }
+
                 switchModalStep('confirm');
                 
                 // Clear cart state
@@ -544,13 +666,11 @@ document.addEventListener('DOMContentLoaded', () => {
     // Autofill phone prefix +56 and prevent deleting it
     const checkoutPhone = document.getElementById('checkout-phone');
     if (checkoutPhone) {
-        // Prefill default
         if (!checkoutPhone.value) {
             checkoutPhone.value = '+56 ';
         }
 
         checkoutPhone.addEventListener('keydown', (e) => {
-            // Prevent backspace or delete from removing "+56 "
             if (e.key === 'Backspace' && checkoutPhone.value.length <= 4) {
                 e.preventDefault();
             }
@@ -562,6 +682,102 @@ document.addEventListener('DOMContentLoaded', () => {
         checkoutPhone.addEventListener('input', (e) => {
             if (!checkoutPhone.value.startsWith('+56 ')) {
                 checkoutPhone.value = '+56 ' + checkoutPhone.value.replace(/^\+?5?6?\s?/, '');
+            }
+        });
+    }
+
+    // Tracking Modal Controls & Simulation
+    const trackingModal = document.getElementById('tracking-modal');
+    const trackingModalOverlay = document.getElementById('tracking-modal-overlay');
+    const closeTrackingModal = document.getElementById('close-tracking-modal');
+    const trackModalCode = document.getElementById('track-modal-code');
+    const trackModalStatusSummary = document.getElementById('track-modal-status-summary');
+
+    let trackingTimer = null;
+
+    const openTrackingModal = () => {
+        if (!trackingModal || !trackingModalOverlay) return;
+        trackingModal.classList.add('active');
+        trackingModalOverlay.classList.add('active');
+        
+        if (trackModalCode) {
+            trackModalCode.innerText = trackingCodeGenerated || 'BX-49201948-CL';
+        }
+        
+        // Reset timeline UI
+        const items = document.querySelectorAll('.tracking-timeline .timeline-item');
+        items.forEach((item, index) => {
+            item.className = 'timeline-item';
+            const timeSpan = item.querySelector('.timeline-time');
+            if (index === 0) {
+                item.classList.add('active');
+                if (timeSpan) timeSpan.innerText = 'Hace unos instantes';
+            } else {
+                if (timeSpan) timeSpan.innerText = 'Pendiente';
+            }
+        });
+        
+        if (trackModalStatusSummary) {
+            trackModalStatusSummary.innerHTML = 'Estado: <strong>Pedido Recibido (Bodega Celzimo)</strong>';
+        }
+
+        // Start tracking step simulation
+        if (trackingTimer) clearInterval(trackingTimer);
+        let currentStep = 0;
+        
+        trackingTimer = setInterval(() => {
+            currentStep++;
+            if (currentStep > 3) {
+                clearInterval(trackingTimer);
+                return;
+            }
+            
+            const timelineItems = document.querySelectorAll('.tracking-timeline .timeline-item');
+            
+            if (timelineItems[currentStep - 1]) {
+                timelineItems[currentStep - 1].classList.remove('active');
+                timelineItems[currentStep - 1].classList.add('completed');
+                const prevTime = timelineItems[currentStep - 1].querySelector('.timeline-time');
+                if (prevTime) prevTime.innerText = 'Completado';
+            }
+            
+            if (timelineItems[currentStep]) {
+                timelineItems[currentStep].classList.add('active');
+                const currTime = timelineItems[currentStep].querySelector('.timeline-time');
+                if (currTime) currTime.innerText = 'En curso';
+                
+                if (trackModalStatusSummary) {
+                    if (currentStep === 1) {
+                        trackModalStatusSummary.innerHTML = 'Estado: <strong>Recibido por Blue Express (En Tránsito a Hub)</strong>';
+                    } else if (currentStep === 2) {
+                        trackModalStatusSummary.innerHTML = 'Estado: <strong>En Ruta de Entrega</strong>';
+                    } else if (currentStep === 3) {
+                        trackModalStatusSummary.innerHTML = 'Estado: <strong>Entregado</strong>';
+                        if (currTime) currTime.innerText = 'Entregado hace un momento';
+                    }
+                }
+            }
+        }, 4000);
+    };
+
+    const hideTrackingModal = () => {
+        if (!trackingModal || !trackingModalOverlay) return;
+        trackingModal.classList.remove('active');
+        trackingModalOverlay.classList.remove('active');
+        if (trackingTimer) clearInterval(trackingTimer);
+    };
+
+    document.addEventListener('click', (e) => {
+        if (e.target && (e.target.id === 'btn-track-shipping' || e.target.closest('#btn-track-shipping'))) {
+            openTrackingModal();
+        }
+    });
+
+    if (closeTrackingModal) closeTrackingModal.addEventListener('click', hideTrackingModal);
+    if (trackingModalOverlay) {
+        trackingModalOverlay.addEventListener('click', (e) => {
+            if (e.target === trackingModalOverlay) {
+                hideTrackingModal();
             }
         });
     }
