@@ -55,7 +55,23 @@ const renderProductList = (productsToRender, containerElement) => {
         productEl.classList.add('product-card');
         
         let promoHTML = '';
-        if (product.discount) {
+        if (product.compare_at_price && product.compare_at_price > product.price) {
+            const discountPercent = Math.round(((product.compare_at_price - product.price) / product.compare_at_price) * 100);
+            promoHTML = `
+                <div class="promo-banner">
+                    <div class="promo-left">
+                        <span class="promo-text">OFERTA</span>
+                    </div>
+                    <div class="promo-right">
+                        <span class="promo-discount">${discountPercent}</span>
+                        <div class="promo-percent">
+                            <span class="percent-sign">%</span>
+                            <span class="off-text">OFF</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+        } else if (product.discount) {
             promoHTML = `
                 <div class="promo-banner">
                     <div class="promo-left">
@@ -72,22 +88,24 @@ const renderProductList = (productsToRender, containerElement) => {
             `;
         }
 
+        // Count unique colors from variants
+        let uniqueColors = [];
+        if (product.variants && product.variants.length > 0) {
+            uniqueColors = [...new Set(product.variants.filter(v => v.color).map(v => v.color))];
+        } else {
+            uniqueColors = ['Único'];
+        }
+
         let colorsHTML = '';
-        if (product.colors && product.colors.length > 0) {
-            const maxColors = 4;
-            const visibleColors = product.colors.slice(0, maxColors);
-            const extraColors = product.colors.length - maxColors;
-            
-            let colorThumbs = visibleColors.map((color, index) => {
+        if (uniqueColors.length > 0) {
+            let colorThumbs = uniqueColors.map((color, index) => {
                 const activeClass = index === 0 ? 'active' : '';
-                return `<img src="${color}" class="color-thumb ${activeClass}" alt="Color variant" onclick="selectColor(event, this, '${color}', ${index})" style="filter: hue-rotate(${index * 45}deg);">`;
+                return `<img src="${product.image}" class="color-thumb ${activeClass}" alt="${color}" onclick="selectColor(event, this, '${product.image}', 0)" style="width: 35px; height: 45px; object-fit: cover; cursor: pointer; border-radius: 2px; border: 1px solid #e5e7eb;">`;
             }).join('');
-            let extraText = extraColors > 0 ? `<span class="extra-colors">+${extraColors}</span>` : '';
             
             colorsHTML = `
-                <div class="product-colors-container">
+                <div class="product-colors-container" style="display: flex; gap: 5px; margin-top: 8px; margin-bottom: 8px;">
                     ${colorThumbs}
-                    ${extraText}
                 </div>
             `;
         }
@@ -110,7 +128,14 @@ const renderProductList = (productsToRender, containerElement) => {
             </div>
             <div class="product-info-card">
                 <h3 class="product-title-card">${product.title}</h3>
-                <div class="product-price-card">${formatCurrency(product.price)} CLP</div>
+                <div class="product-price-card">
+                    ${product.compare_at_price && product.compare_at_price > product.price ? `
+                        <span class="sale-price" style="font-weight: 600; color: #ef4444;">${formatCurrency(product.price)} CLP</span>
+                        <span class="original-price" style="text-decoration: line-through; color: #9ca3af; font-size: 0.85rem; margin-left: 8px;">${formatCurrency(product.compare_at_price)} CLP</span>
+                    ` : `
+                        <span class="current-price" style="font-weight: 600;">${formatCurrency(product.price)} CLP</span>
+                    `}
+                </div>
                 
                 ${colorsHTML}
                 
@@ -338,7 +363,7 @@ window.selectColor = (event, element, newSrc, index) => {
         const mainImg = card.querySelector('.main-product-img');
         if (mainImg) {
             mainImg.src = newSrc;
-            mainImg.style.filter = `hue-rotate(${index * 45}deg)`;
+            mainImg.style.filter = 'none';
         }
     }
 };
