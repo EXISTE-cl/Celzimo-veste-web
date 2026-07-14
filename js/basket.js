@@ -6,6 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let couponDiscountPercent = 0;
     
     // Blue Express shipping state
+    const BLUE_EXPRESS_INTEGRATION_ID = '6a55383eeb7eeb0e5bd88541';
     let selectedRegion = 'metropolitana';
     let selectedCommune = 'santiago';
     let selectedShippingMethod = 'home'; // 'home' or 'pickup'
