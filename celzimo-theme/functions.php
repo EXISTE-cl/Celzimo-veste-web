@@ -2191,6 +2191,8 @@ function celzimo_chile_regions_comunas_js() {
                 $citySelect = $('#' + type + '_city');
             }
 
+            var previousValue = $citySelect.val();
+
             // Limpiar y repoblar comunas
             $citySelect.empty();
             $citySelect.append('<option value="">Selecciona tu comuna</option>');
@@ -2206,8 +2208,12 @@ function celzimo_chile_regions_comunas_js() {
                 $citySelect.prop('disabled', true);
             }
 
+            var newValue = $citySelect.val();
+
             $citySelect.trigger('change.select2');
-            $citySelect.trigger('change');
+            if (previousValue !== newValue) {
+                $citySelect.trigger('change');
+            }
         }
 
         // Eventos
