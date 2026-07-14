@@ -1726,7 +1726,8 @@ function celzimo_checkout_document_js() {
 
             if (solicitaFactura) {
                 $('.celzimo-factura-field').show();
-                $('.celzimo-boleta-field').hide();
+                $('.celzimo-boleta-field').show(); // Mantener visible el RUT del Cliente (boleta) en Factura
+
                 
                 // Hacer teléfono ancho completo en Factura
                 $('#billing_phone_field').removeClass('form-row-last').addClass('form-row-wide');
@@ -1841,6 +1842,14 @@ function celzimo_validate_billing_document_fields( $data, $errors ) {
         if ( empty( $_POST['billing_giro'] ) ) {
             $errors->add( 'billing_giro_required', 'El <strong>Giro Comercial</strong> es obligatorio si solicita Factura.' );
         }
+        // Si ingresa RUT del Cliente (siendo opcional en Factura), validarlo si no está vacío
+        if ( ! empty( $_POST['billing_rut_personal'] ) ) {
+            $rut = sanitize_text_field( $_POST['billing_rut_personal'] );
+            if ( ! celzimo_valida_rut( $rut ) ) {
+                $errors->add( 'billing_rut_personal_invalid', 'El <strong>RUT del Cliente</strong> ingresado no es válido.' );
+            }
+        }
+
         // Si la dirección de envío es distinta, validar los campos propios de despacho
         $diff_address = isset( $_POST['billing_factura_diff_address'] ) && (int) $_POST['billing_factura_diff_address'] === 1;
         if ( $diff_address ) {
