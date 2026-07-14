@@ -2596,4 +2596,69 @@ function celzimo_checkout_add_progress_bar_fragment( $fragments ) {
     return $fragments;
 }
 
+// Deshabilitar la dirección de envío en el checkout (usar dirección de facturación para el despacho)
+add_filter( 'woocommerce_cart_needs_shipping_address', '__return_false' );
+
+// Reorganizar los pasos de Fluid Checkout
+add_action( 'fc_register_steps', 'celzimo_reorder_fluid_checkout_steps', 99999 );
+function celzimo_reorder_fluid_checkout_steps() {
+    if ( ! class_exists( 'FluidCheckout_Steps' ) ) return;
+    
+    try {
+        $ref = new ReflectionClass( 'FluidCheckout_Steps' );
+        $prop = $ref->getProperty( 'registered_checkout_steps' );
+        $prop->setAccessible( true );
+        
+        $instance = FluidCheckout_Steps::instance();
+        $steps = $prop->getValue( $instance );
+        
+        if ( is_array( $steps ) ) {
+            foreach ( $steps as &$step ) {
+                // 1. Modificar prioridades de pasos principales
+                if ( $step['step_id'] === 'billing' ) {
+                    $step['priority'] = 15; // Dirección de Facturación antes que envío
+                } elseif ( $step['step_id'] === 'shipping' ) {
+                    $step['priority'] = 20; // Envío después de facturación
+                }
+                
+                // 2. Modificar substeps de shipping (Envío)
+                if ( $step['step_id'] === 'shipping' && isset( $step['substeps'] ) && is_array( $step['substeps'] ) ) {
+                    $new_substeps = [];
+                    foreach ( $step['substeps'] as $substep ) {
+                        // Eliminar dirección de envío
+                        if ( $substep['substep_id'] === 'shipping_address' ) {
+                            continue;
+                        }
+                        // Modificar prioridades
+                        if ( $substep['substep_id'] === 'order_notes' ) {
+                            $substep['priority'] = 15; // Notas adicionales antes
+                        } elseif ( $substep['substep_id'] === 'shipping_method' ) {
+                            $substep['priority'] = 20; // Métodos de envío después
+                        }
+                        $new_substeps[] = $substep;
+                    }
+                    // Ordenar substeps por prioridad
+                    usort( $new_substeps, function( $a, $b ) {
+                        return $a['priority'] - $b['priority'];
+                    } );
+                    $step['substeps'] = $new_substeps;
+                }
+            }
+            unset( $step );
+            
+            // Ordenar pasos principales por prioridad
+            usort( $steps, function( $a, $b ) {
+                return $a['priority'] - $b['priority'];
+            } );
+            
+            $prop->setValue( $instance, $steps );
+        }
+    } catch ( Exception $e ) {
+        error_log( 'Error reordenando pasos checkout: ' . $e->getMessage() );
+    }
+}
+
+
+
+
 
