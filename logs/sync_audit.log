@@ -1,0 +1,117 @@
+[2026-07-04T23:34:07.106Z] ================================================================
+[2026-07-04T23:34:07.108Z] INICIANDO PROCESO DE SINCRONIZACIÓN DE STOCK E INVENTARIO
+[2026-07-04T23:34:07.108Z] Origen: https://carolamiccono.cl
+[2026-07-04T23:34:07.109Z] Destino: Local (../js/data.js) y FTP (ftp.todoexiste.com)
+[2026-07-04T23:34:07.109Z] ================================================================
+[2026-07-04T23:34:12.714Z] [Scraper] Se extrajeron 279 productos en total.
+[2026-07-04T23:34:12.715Z] [Gatekeeper] Procesando lista de aprobación: C:\Users\Cristobal\.gemini\antigravity\scratch\celzimo-veste\sync-system\approval_list.csv
+[2026-07-04T23:34:12.726Z] [Gatekeeper] 2 productos aprobados listos para fusionar.
+[2026-07-04T23:34:12.727Z] [Publisher] Leídos 0 productos actuales del archivo de datos.
+[2026-07-04T23:34:12.728Z] [Publisher] Catálogo actualizado localmente de forma exitosa.
+[2026-07-04T23:34:14.507Z] [FATAL ERROR] Fallo general en la sincronización: FTPError: 553 Can't open that file: No such file or directory
+    at FTPContext._onControlSocketData (C:\Users\Cristobal\.gemini\antigravity\scratch\celzimo-veste\node_modules\basic-ftp\dist\FtpContext.js:300:39)
+    at Socket.<anonymous> (C:\Users\Cristobal\.gemini\antigravity\scratch\celzimo-veste\node_modules\basic-ftp\dist\FtpContext.js:133:44)
+    at Socket.emit (node:events:509:28)
+    at addChunk (node:internal/streams/readable:563:12)
+    at readableAddChunkPushByteMode (node:internal/streams/readable:514:3)
+    at Readable.push (node:internal/streams/readable:394:5)
+    at TCP.onStreamRead (node:internal/stream_base_commons:189:23)
+[2026-07-04T23:34:47.873Z] ================================================================
+[2026-07-04T23:34:47.874Z] INICIANDO PROCESO DE SINCRONIZACIÓN DE STOCK E INVENTARIO
+[2026-07-04T23:34:47.875Z] Origen: https://carolamiccono.cl
+[2026-07-04T23:34:47.875Z] Destino: Local (../js/data.js) y FTP (ftp.todoexiste.com)
+[2026-07-04T23:34:47.875Z] ================================================================
+[2026-07-04T23:34:53.532Z] [Scraper] Se extrajeron 279 productos en total.
+[2026-07-04T23:34:53.532Z] [Gatekeeper] Procesando lista de aprobación: C:\Users\Cristobal\.gemini\antigravity\scratch\celzimo-veste\sync-system\approval_list.csv
+[2026-07-04T23:34:53.535Z] [Gatekeeper] 2 productos aprobados listos para fusionar.
+[2026-07-04T23:34:53.536Z] [Publisher] Leídos 0 productos actuales del archivo de datos.
+[2026-07-04T23:34:53.537Z] [Publisher] Catálogo actualizado localmente de forma exitosa.
+[2026-07-04T23:34:55.856Z] [SUCCESS] Sincronización y despliegue FTP finalizados con éxito.
+[2026-07-04T23:35:13.550Z] ================================================================
+[2026-07-04T23:35:13.551Z] INICIANDO PROCESO DE SINCRONIZACIÓN DE STOCK E INVENTARIO
+[2026-07-04T23:35:13.552Z] Origen: https://carolamiccono.cl
+[2026-07-04T23:35:13.552Z] Destino: Local (../js/data.js) y FTP (ftp.todoexiste.com)
+[2026-07-04T23:35:13.552Z] ================================================================
+[2026-07-04T23:35:18.445Z] [Scraper] Se extrajeron 279 productos en total.
+[2026-07-04T23:35:18.445Z] [Gatekeeper] Procesando lista de aprobación: C:\Users\Cristobal\.gemini\antigravity\scratch\celzimo-veste\sync-system\approval_list.csv
+[2026-07-04T23:35:18.447Z] [Gatekeeper] 2 productos aprobados listos para fusionar.
+[2026-07-04T23:35:18.448Z] [Publisher] Leídos 7 productos actuales del archivo de datos.
+[2026-07-04T23:35:18.449Z] [Publisher] Catálogo actualizado localmente de forma exitosa.
+[2026-07-04T23:35:21.029Z] [SUCCESS] Sincronización y despliegue FTP finalizados con éxito.
+[2026-07-04T23:35:23.957Z] ================================================================
+[2026-07-04T23:35:23.958Z] INICIANDO PROCESO DE SINCRONIZACIÓN DE STOCK E INVENTARIO
+[2026-07-04T23:35:23.959Z] Origen: https://carolamiccono.cl
+[2026-07-04T23:35:23.959Z] Destino: Local (../js/data.js) y FTP (ftp.todoexiste.com)
+[2026-07-04T23:35:23.959Z] ================================================================
+[2026-07-04T23:35:28.308Z] [Scraper] Se extrajeron 279 productos en total.
+[2026-07-04T23:35:28.309Z] [Gatekeeper] Procesando lista de aprobación: C:\Users\Cristobal\.gemini\antigravity\scratch\celzimo-veste\sync-system\approval_list.csv
+[2026-07-04T23:35:28.310Z] [Gatekeeper] 2 productos aprobados listos para fusionar.
+[2026-07-04T23:35:28.312Z] [Publisher] Leídos 9 productos actuales del archivo de datos.
+[2026-07-04T23:35:28.313Z] [Publisher] Catálogo actualizado localmente de forma exitosa.
+[2026-07-04T23:35:30.801Z] [SUCCESS] Sincronización y despliegue FTP finalizados con éxito.
+[2026-07-05T00:06:54.957Z] ================================================================
+[2026-07-05T00:06:54.958Z] INICIANDO PROCESO DE SINCRONIZACIÓN DE STOCK E INVENTARIO
+[2026-07-05T00:06:54.958Z] Origen: https://carolamiccono.cl
+[2026-07-05T00:06:54.959Z] Destino: Local (../js/data.js) y FTP (ftp.todoexiste.com)
+[2026-07-05T00:06:54.959Z] ================================================================
+[2026-07-05T00:07:00.835Z] [Scraper] Se extrajeron 279 productos en total.
+[2026-07-05T00:07:00.836Z] [Gatekeeper] Procesando lista de aprobación: C:\Users\Cristobal\.gemini\antigravity\scratch\celzimo-veste\sync-system\approval_list.csv
+[2026-07-05T00:07:00.838Z] [Gatekeeper] 0 productos aprobados listos para fusionar.
+[2026-07-05T00:07:00.839Z] [Publisher] Leídos 9 productos actuales del archivo de datos.
+[2026-07-05T00:07:00.840Z] [Publisher] Catálogo actualizado localmente de forma exitosa.
+[2026-07-05T00:07:04.341Z] [SUCCESS] Sincronización y despliegue FTP finalizados con éxito.
+[2026-07-05T00:30:55.086Z] ================================================================
+[2026-07-05T00:30:55.087Z] INICIANDO PROCESO DE SINCRONIZACIÓN DE STOCK E INVENTARIO
+[2026-07-05T00:30:55.088Z] Origen: https://carolamiccono.cl
+[2026-07-05T00:30:55.088Z] Destino: Local (../js/data.js) y FTP (ftp.todoexiste.com)
+[2026-07-05T00:30:55.088Z] ================================================================
+[2026-07-05T00:31:00.766Z] [Scraper] Se extrajeron 279 productos en total.
+[2026-07-05T00:31:00.767Z] [Gatekeeper] Procesando lista de aprobación: C:\Users\Cristobal\.gemini\antigravity\scratch\celzimo-veste\sync-system\approval_list.csv
+[2026-07-05T00:31:00.769Z] [Gatekeeper] 0 productos aprobados listos para fusionar.
+[2026-07-05T00:31:00.770Z] [Publisher] Leídos 4 productos actuales del archivo de datos.
+[2026-07-05T00:31:00.771Z] [Publisher] Catálogo actualizado localmente de forma exitosa.
+[2026-07-05T00:31:04.120Z] [SUCCESS] Sincronización y despliegue FTP finalizados con éxito.
+[2026-07-05T00:50:22.464Z] ================================================================
+[2026-07-05T00:50:22.466Z] INICIANDO PROCESO DE SINCRONIZACIÓN DE STOCK E INVENTARIO
+[2026-07-05T00:50:22.466Z] Origen: https://carolamiccono.cl
+[2026-07-05T00:50:22.466Z] Destino: Local (../js/data.js) y FTP (ftp.todoexiste.com)
+[2026-07-05T00:50:22.467Z] ================================================================
+[2026-07-05T00:50:26.933Z] [Scraper] Se extrajeron 279 productos en total.
+[2026-07-05T00:50:26.934Z] [Gatekeeper] Procesando lista de aprobación: C:\Users\Cristobal\.gemini\antigravity\scratch\celzimo-veste\sync-system\approval_list.csv
+[2026-07-05T00:50:26.936Z] [Gatekeeper] 3 productos aprobados listos para fusionar.
+[2026-07-05T00:50:26.937Z] [Publisher] Leídos 4 productos actuales del archivo de datos.
+[2026-07-05T00:50:26.938Z] [Publisher] Catálogo actualizado localmente de forma exitosa.
+[2026-07-05T00:50:30.544Z] [SUCCESS] Sincronización y despliegue FTP finalizados con éxito.
+[2026-07-05T16:12:19.116Z] ================================================================
+[2026-07-05T16:12:19.118Z] INICIANDO PROCESO DE SINCRONIZACIÓN DE STOCK E INVENTARIO
+[2026-07-05T16:12:19.118Z] Origen: https://carolamiccono.cl
+[2026-07-05T16:12:19.119Z] Destino: Local (../js/data.js) y FTP (ftp.todoexiste.com)
+[2026-07-05T16:12:19.119Z] ================================================================
+[2026-07-05T16:12:24.657Z] [Scraper] Se extrajeron 279 productos en total.
+[2026-07-05T16:12:24.658Z] [Gatekeeper] Procesando lista de aprobación: C:\Users\Cristobal\.gemini\antigravity\scratch\celzimo-veste\sync-system\approval_list.csv
+[2026-07-05T16:12:24.660Z] [Gatekeeper] 3 productos aprobados listos para fusionar.
+[2026-07-05T16:12:24.661Z] [Publisher] Leídos 7 productos actuales del archivo de datos.
+[2026-07-05T16:12:24.662Z] [Publisher] Catálogo actualizado localmente de forma exitosa.
+[2026-07-05T16:12:28.210Z] [SUCCESS] Sincronización y despliegue FTP finalizados con éxito.
+[2026-07-05T20:47:42.615Z] ================================================================
+[2026-07-05T20:47:42.617Z] INICIANDO PROCESO DE SINCRONIZACIÓN DE STOCK E INVENTARIO
+[2026-07-05T20:47:42.618Z] Origen: https://carolamiccono.cl
+[2026-07-05T20:47:42.618Z] Destino: Local (../js/data.js) y FTP (ftp.todoexiste.com)
+[2026-07-05T20:47:42.619Z] ================================================================
+[2026-07-05T20:47:49.068Z] [Scraper] Se extrajeron 279 productos en total.
+[2026-07-05T20:47:49.069Z] [Gatekeeper] Procesando lista de aprobación: C:\Users\Cristobal\.gemini\antigravity\scratch\celzimo-veste\sync-system\approval_list.csv
+[2026-07-05T20:47:49.071Z] [Gatekeeper] 3 productos aprobados listos para fusionar.
+[2026-07-05T20:47:49.072Z] [Publisher] Leídos 7 productos actuales del archivo de datos.
+[2026-07-05T20:47:49.073Z] [Publisher] Catálogo actualizado localmente de forma exitosa.
+[2026-07-05T20:47:53.083Z] [SUCCESS] Sincronización y despliegue FTP finalizados con éxito.
+[2026-07-06T23:57:59.382Z] ================================================================
+[2026-07-06T23:57:59.384Z] INICIANDO PROCESO DE SINCRONIZACIÓN DE STOCK E INVENTARIO
+[2026-07-06T23:57:59.384Z] Origen: https://carolamiccono.cl
+[2026-07-06T23:57:59.385Z] Destino: Local (../js/data.js) y FTP (ftp.todoexiste.com)
+[2026-07-06T23:57:59.385Z] ================================================================
+[2026-07-06T23:58:05.154Z] [Scraper] Se extrajeron 279 productos en total.
+[2026-07-06T23:58:05.154Z] [Gatekeeper] Procesando lista de aprobación: C:\Users\Cristobal\.gemini\antigravity\scratch\celzimo-veste\sync-system\approval_list.csv
+[2026-07-06T23:58:05.156Z] [Gatekeeper] 3 productos aprobados listos para fusionar.
+[2026-07-06T23:58:05.166Z] [Publisher] Leídos 3 productos actuales del archivo de datos.
+[2026-07-06T23:58:05.167Z] [Publisher] Catálogo actualizado localmente de forma exitosa.
+[2026-07-06T23:58:08.961Z] [SUCCESS] Sincronización y despliegue FTP finalizados con éxito.

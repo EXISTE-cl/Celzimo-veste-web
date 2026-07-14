@@ -1,0 +1,12 @@
+{
+  "sourceUrl": "https://carolamiccono.cl",
+  "rateLimitMs": 1500,
+  "ftp": {
+    "host": "ftp.todoexiste.com",
+    "user": "CELZIMO@celzimoveste.cl",
+    "password": "Csc170431*",
+    "secure": true
+  },
+  "localDataJsPath": "../js/data.js",
+  "approvalCsvPath": "./approval_list.csv"
+}

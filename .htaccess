@@ -1,0 +1,43 @@
+# BEGIN WordPress
+# Las directivas (líneas) entre "BEGIN WordPress" y "END WordPress" son
+# generadas dinámicamente y solo deberían ser modificadas mediante filtros de WordPress.
+# Cualquier cambio en las directivas que hay entre esos marcadores será sobreescrito.
+<IfModule mod_rewrite.c>
+RewriteEngine On
+RewriteBase /
+
+# Forzar redirección HTTPS 301
+RewriteCond %{HTTPS} off
+RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
+
+# Redirecciones de URLs del MVP estático a WordPress/WooCommerce
+# 1. Fichas de producto dinámicas por parámetro id
+RewriteCond %{QUERY_STRING} id=100
+RewriteRule ^product\.html$ /producto/jeans-recto-emilia-negro/? [R=301,L]
+
+RewriteCond %{QUERY_STRING} id=101
+RewriteRule ^product\.html$ /producto/jeans-culotte-azul-raw/? [R=301,L]
+
+RewriteCond %{QUERY_STRING} id=102
+RewriteRule ^product\.html$ /producto/jeans-wide-leg-stella-new-gris/? [R=301,L]
+
+RewriteRule ^product\.html$ /tienda/? [R=301,L]
+
+# 2. Páginas estáticas institucionales y funcionales
+RewriteRule ^devoluciones-y-garantias\.html$ /devoluciones-y-garantias/ [R=301,L]
+RewriteRule ^politica-envios\.html$ /politica-envios/ [R=301,L]
+RewriteRule ^politica-privacidad\.html$ /politica-privacidad/ [R=301,L]
+RewriteRule ^terminos-y-condiciones\.html$ /terminos-y-condiciones/ [R=301,L]
+RewriteRule ^shop\.html$ /tienda/ [R=301,L]
+RewriteRule ^basket\.html$ /carrito/ [R=301,L]
+RewriteRule ^account\.html$ /mi-cuenta/ [R=301,L]
+RewriteRule ^register\.html$ /mi-cuenta/ [R=301,L]
+RewriteRule ^index\.html$ / [R=301,L]
+
+# Reglas estándar de WordPress
+RewriteRule ^index\.php$ - [L]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule . /index.php [L]
+</IfModule>
+# END WordPress

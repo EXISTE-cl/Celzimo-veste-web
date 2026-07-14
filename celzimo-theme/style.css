@@ -1,0 +1,40 @@
+/*
+Theme Name: Celzimo Veste Theme
+Theme URI: https://celzimoveste.cl
+Author: Cristobal (Senior Web Developer)
+Author URI: https://celzimoveste.cl
+Description: Tema personalizado y seguro de WordPress para la tienda premium Celzimo Veste.
+Version: 1.0.0
+License: GNU General Public License v2 or later
+License URI: http://www.gnu.org/licenses/gpl-2.0.html
+Tags: e-commerce, custom-menu, post-formats, translation-ready
+Text Domain: celzimo-theme
+*/
+/* Sticky Mini Cart Footer */
+.widget_shopping_cart_content {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+.widget_shopping_cart_content ul.cart_list {
+    flex: 1;
+    overflow-y: auto;
+    margin-bottom: 0;
+    padding-bottom: 15px;
+}
+.widget_shopping_cart_content .woocommerce-mini-cart__total {
+    margin-top: auto;
+    background: #fff;
+    padding-top: 15px;
+    border-top: 1px solid #e5e7eb;
+    position: sticky;
+    bottom: 80px; /* Adjust if buttons height is fixed */
+    z-index: 10;
+}
+.widget_shopping_cart_content .woocommerce-mini-cart__buttons {
+    background: #fff;
+    padding-bottom: 20px;
+    position: sticky;
+    bottom: 0;
+    z-index: 10;
+}

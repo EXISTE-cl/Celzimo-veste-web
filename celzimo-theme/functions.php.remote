@@ -1,0 +1,1154 @@
+<?php
+/**
+ * Celzimo Veste Theme — functions.php (VERSIÓN ESTABLE BASE)
+ *
+ * @package Celzimo_Veste
+ */
+
+if ( ! defined( 'ABSPATH' ) ) {
+    exit;
+}
+
+/* ==========================================================================
+   THEME SETUP
+   ========================================================================== */
+
+function celzimo_theme_setup() {
+    add_theme_support( 'automatic-feed-links' );
+    add_theme_support( 'title-tag' );
+    add_theme_support( 'post-thumbnails' );
+    register_nav_menus([
+        'menu-primary'         => 'Primary Menu',
+        'menu-footer-customer' => 'Footer Customer Service',
+        'menu-footer-legal'    => 'Footer Legal Menu',
+    ]);
+    add_theme_support( 'html5', ['search-form','comment-form','comment-list','gallery','caption','style','script'] );
+    add_theme_support( 'customize-selective-refresh-widgets' );
+    add_theme_support( 'woocommerce' );
+    add_theme_support( 'wc-product-gallery-zoom' );
+    add_theme_support( 'wc-product-gallery-lightbox' );
+    add_theme_support( 'wc-product-gallery-slider' );
+}
+add_action( 'after_setup_theme', 'celzimo_theme_setup' );
+
+/* ==========================================================================
+   ENQUEUE SCRIPTS & STYLES
+   ========================================================================== */
+
+function celzimo_theme_scripts() {
+    wp_enqueue_style( 'tabler-icons',        'https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css', [], '1.0.0' );
+    wp_enqueue_style( 'celzimo-google-fonts','https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:wght@400;600;700&display=swap', [], null );
+    wp_enqueue_style( 'celzimo-theme-style', get_stylesheet_uri(), [], '2.0.0' );
+    wp_enqueue_style( 'celzimo-custom-style', get_template_directory_uri() . '/css/style.css', ['celzimo-theme-style'], '2.0.1' );
+    if ( ! is_admin() ) {
+        wp_enqueue_script( 'celzimo-theme-navigation', get_template_directory_uri() . '/js/navigation.js', [], '1.0.0', true );
+    }
+}
+add_action( 'wp_enqueue_scripts', 'celzimo_theme_scripts' );
+
+/* ==========================================================================
+   CART STYLES — Inline (garantiza aplicación sin importar caché)
+   Aplica a: WooCommerce mini-cart widget + Side Cart WooCommerce (xoo-wsc)
+   ========================================================================== */
+add_action( 'wp_head', 'celzimo_cart_inline_styles', 99 );
+function celzimo_cart_inline_styles() {
+    ?>
+    <style id="celzimo-cart-css">
+    /* =====================================================================
+       WOOCOMMERCE MINI-CART (widget dropdown nativo del header)
+       ===================================================================== */
+    .widget_shopping_cart,
+    .woocommerce .widget_shopping_cart {
+        font-family: 'Inter', sans-serif;
+    }
+    /* Panel / dropdown container */
+    .widget_shopping_cart_content {
+        background: #fff;
+        border-radius: 12px;
+        box-shadow: 0 8px 40px rgba(0,0,0,0.18);
+        padding: 0;
+        overflow: hidden;
+        min-width: 340px;
+        max-width: 380px;
+    }
+    /* Título "Tu Carrito" */
+    .widget_shopping_cart_content h2,
+    .woocommerce-mini-cart__title,
+    .widget_shopping_cart_content .cart-heading {
+        font-size: 20px !important;
+        font-weight: 700 !important;
+        color: #1a1a2e !important;
+        padding: 20px 20px 0 !important;
+        margin: 0 0 14px !important;
+        display: flex !important;
+        align-items: center !important;
+        gap: 8px !important;
+        letter-spacing: -0.02em !important;
+    }
+    /* Lista de productos */
+    ul.woocommerce-mini-cart {
+        list-style: none !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        max-height: 320px;
+        overflow-y: auto;
+    }
+    ul.woocommerce-mini-cart::-webkit-scrollbar { width: 4px; }
+    ul.woocommerce-mini-cart::-webkit-scrollbar-thumb { background: #ddd; border-radius: 2px; }
+    /* Cada item */
+    li.woocommerce-mini-cart-item,
+    .woocommerce-mini-cart-item {
+        display: grid !important;
+        grid-template-columns: 72px 1fr !important;
+        gap: 12px !important;
+        padding: 14px 20px !important;
+        border-bottom: 1px solid #f5f5f5 !important;
+        align-items: start !important;
+        position: relative !important;
+        list-style: none !important;
+    }
+    /* Imagen producto */
+    .woocommerce-mini-cart-item img {
+        width: 72px !important;
+        height: 72px !important;
+        object-fit: cover !important;
+        border-radius: 8px !important;
+        border: 1px solid #eee !important;
+        display: block !important;
+        grid-row: 1 !important;
+    }
+    /* Nombre producto */
+    .woocommerce-mini-cart-item a:not(.remove) {
+        font-size: 11px !important;
+        font-weight: 700 !important;
+        color: #1a1a2e !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.04em !important;
+        text-decoration: none !important;
+        display: block !important;
+        line-height: 1.35 !important;
+        margin-bottom: 4px !important;
+    }
+    /* Cantidad × Precio */
+    .woocommerce-mini-cart-item .quantity {
+        font-size: 12px !important;
+        color: #888 !important;
+        display: block !important;
+        margin-top: 4px !important;
+    }
+    .woocommerce-mini-cart-item .quantity .woocommerce-Price-amount {
+        font-weight: 700 !important;
+        color: #1a1a2e !important;
+        font-size: 13px !important;
+    }
+    /* Botón eliminar × */
+    .woocommerce-mini-cart-item .remove {
+        position: absolute !important;
+        top: 10px !important;
+        right: 14px !important;
+        font-size: 16px !important;
+        color: #ccc !important;
+        text-decoration: none !important;
+        font-weight: 400 !important;
+        line-height: 1 !important;
+        width: 20px !important;
+        height: 20px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        background: none !important;
+        border: none !important;
+        cursor: pointer !important;
+    }
+    .woocommerce-mini-cart-item .remove:hover { color: #e53935 !important; }
+    /* Total */
+    .woocommerce-mini-cart__total,
+    .total {
+        display: flex !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+        padding: 14px 20px !important;
+        border-top: 2px solid #f0f0f0 !important;
+        margin: 0 !important;
+    }
+    .woocommerce-mini-cart__total strong {
+        font-size: 14px !important;
+        font-weight: 600 !important;
+        color: #666 !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.05em !important;
+    }
+    .woocommerce-mini-cart__total .woocommerce-Price-amount {
+        font-size: 18px !important;
+        font-weight: 800 !important;
+        color: #1a1a2e !important;
+    }
+    /* Botones */
+    .woocommerce-mini-cart__buttons,
+    .widget_shopping_cart_content .buttons {
+        padding: 14px 20px 18px !important;
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 8px !important;
+    }
+    /* Botón Finalizar compra */
+    .woocommerce-mini-cart__buttons .checkout,
+    .widget_shopping_cart_content .checkout,
+    a.checkout.wc-forward {
+        display: block !important;
+        width: 100% !important;
+        background: #1a1a2e !important;
+        color: #fff !important;
+        text-align: center !important;
+        font-size: 13px !important;
+        font-weight: 700 !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.08em !important;
+        padding: 14px 20px !important;
+        border-radius: 6px !important;
+        text-decoration: none !important;
+        border: none !important;
+        cursor: pointer !important;
+        transition: background 0.2s !important;
+        box-sizing: border-box !important;
+        line-height: 1 !important;
+    }
+    a.checkout.wc-forward:hover { background: #2d2d50 !important; color: #fff !important; }
+    /* Botón Ver carrito */
+    .woocommerce-mini-cart__buttons .button.wc-forward:not(.checkout),
+    .widget_shopping_cart_content .cart.wc-forward,
+    a.cart.wc-forward {
+        display: block !important;
+        width: 100% !important;
+        text-align: center !important;
+        font-size: 12px !important;
+        color: #888 !important;
+        text-decoration: none !important;
+        padding: 6px 0 !important;
+        background: none !important;
+        border: none !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.05em !important;
+        transition: color 0.15s !important;
+        box-sizing: border-box !important;
+    }
+    a.cart.wc-forward:hover { color: #1a1a2e !important; text-decoration: underline !important; }
+
+    /* =====================================================================
+       SIDE CART WOOCOMMERCE (xoo-wsc) — Panel deslizante
+       ===================================================================== */
+    .xoo-wsc-modal {
+        width: 380px !important;
+        max-width: 100vw !important;
+        font-family: 'Inter', sans-serif !important;
+        background: #fff !important;
+        box-shadow: -4px 0 40px rgba(0,0,0,0.2) !important;
+        display: flex !important;
+        flex-direction: column !important;
+    }
+    .xoo-wsc-header {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        padding: 22px 24px 18px !important;
+        border-bottom: 1px solid #f0f0f0 !important;
+    }
+    .xoo-wsc-header h2,
+    .xoo-wsc-hdr-title {
+        font-size: 22px !important;
+        font-weight: 700 !important;
+        color: #1a1a2e !important;
+        margin: 0 !important;
+        letter-spacing: -0.02em !important;
+        text-transform: none !important;
+    }
+    .xoo-wsc-close, .xoo-wsc-hdr-close {
+        background: #1a1a2e !important;
+        border: none !important;
+        color: #fff !important;
+        width: 34px !important;
+        height: 34px !important;
+        border-radius: 50% !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        font-size: 16px !important;
+        font-weight: 700 !important;
+        cursor: pointer !important;
+        padding: 0 !important;
+        transition: background 0.2s, transform 0.15s !important;
+    }
+    .xoo-wsc-close:hover { background: #2d2d50 !important; transform: rotate(90deg) !important; }
+    /* Productos */
+    .xoo-wsc-bskt, .xoo-wsc-items, .xoo-wsc-cart-content { padding: 0 !important; }
+    .xoo-wsc-bskt-product, .xoo-wsc-item, .xoo-wsc-product {
+        display: grid !important;
+        grid-template-columns: 72px 1fr !important;
+        gap: 12px !important;
+        padding: 16px 20px !important;
+        border-bottom: 1px solid #f5f5f5 !important;
+        position: relative !important;
+        align-items: start !important;
+    }
+    .xoo-wsc-bskt-img, .xoo-wsc-img-col { width: 72px !important; height: 72px !important; }
+    .xoo-wsc-bskt-img img, .xoo-wsc-img-col img, .xoo-wsc-item img {
+        width: 72px !important;
+        height: 72px !important;
+        object-fit: cover !important;
+        border-radius: 8px !important;
+        border: 1px solid #eee !important;
+        display: block !important;
+    }
+    .xoo-wsc-bskt-pname, .xoo-wsc-pname {
+        font-size: 11px !important;
+        font-weight: 700 !important;
+        color: #1a1a2e !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.04em !important;
+        line-height: 1.35 !important;
+        margin: 0 0 4px !important;
+    }
+    .xoo-wsc-smeta, .xoo-wsc-bskt-smeta { font-size: 11px !important; color: #888 !important; }
+    .xoo-wsc-bskt-price .woocommerce-Price-amount,
+    .xoo-wsc-price .woocommerce-Price-amount { font-size: 14px !important; font-weight: 700 !important; color: #1a1a2e !important; }
+    /* Cantidad — botones cuadrados oscuros */
+    .xoo-wsc-bskt-qty, .xoo-wsc-qty {
+        display: flex !important;
+        align-items: center !important;
+        gap: 6px !important;
+        margin-top: 8px !important;
+    }
+    .xoo-wsc-qt-btn, .xoo-wsc-qty button, .xoo-wsc-bskt-qty button {
+        width: 32px !important;
+        height: 32px !important;
+        background: #1a1a2e !important;
+        color: #fff !important;
+        border: none !important;
+        border-radius: 4px !important;
+        font-size: 18px !important;
+        cursor: pointer !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        padding: 0 !important;
+        line-height: 1 !important;
+        transition: background 0.15s !important;
+    }
+    .xoo-wsc-qt-btn:hover { background: #2d2d50 !important; }
+    .xoo-wsc-qty input, .xoo-wsc-bskt-qty input {
+        width: 36px !important;
+        height: 32px !important;
+        text-align: center !important;
+        border: 1px solid #ddd !important;
+        border-radius: 4px !important;
+        font-size: 14px !important;
+        font-weight: 700 !important;
+        color: #1a1a2e !important;
+        padding: 0 !important;
+    }
+    /* Eliminar */
+    .xoo-wsc-smclose, .xoo-wsc-bskt-smclose {
+        width: 32px !important;
+        height: 32px !important;
+        background: #f5f5f5 !important;
+        border: none !important;
+        border-radius: 4px !important;
+        color: #888 !important;
+        cursor: pointer !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        padding: 0 !important;
+        position: static !important;
+        margin-left: 4px !important;
+        font-size: 14px !important;
+        transition: background 0.15s, color 0.15s !important;
+    }
+    .xoo-wsc-smclose:hover { background: #ffe5e5 !important; color: #c0392b !important; }
+    /* Footer */
+    .xoo-wsc-ft, .xoo-wsc-footer {
+        padding: 16px 20px 20px !important;
+        border-top: 2px solid #f0f0f0 !important;
+    }
+    .xoo-wsc-subtotal, .xoo-wsc-ft-subtotal {
+        display: flex !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+        padding-bottom: 14px !important;
+        margin-bottom: 14px !important;
+        border-bottom: 1px solid #f5f5f5 !important;
+    }
+    .xoo-wsc-ft-subtotal span:first-child, .xoo-wsc-subtotal .xoo-wsc-st-label {
+        font-size: 13px !important;
+        font-weight: 600 !important;
+        color: #666 !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.05em !important;
+    }
+    .xoo-wsc-ft-subtotal .amount, .xoo-wsc-subtotal .xoo-wsc-st-price,
+    .xoo-wsc-subtotal .woocommerce-Price-amount {
+        font-size: 18px !important;
+        font-weight: 800 !important;
+        color: #1a1a2e !important;
+    }
+    /* Botón finalizar compra */
+    .xoo-wsc-ft-btn-checkout, a.xoo-wsc-ft-btn-checkout {
+        display: block !important;
+        width: 100% !important;
+        background: #1a1a2e !important;
+        color: #fff !important;
+        text-align: center !important;
+        font-size: 13px !important;
+        font-weight: 700 !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.08em !important;
+        padding: 15px !important;
+        border-radius: 6px !important;
+        border: none !important;
+        text-decoration: none !important;
+        margin-bottom: 8px !important;
+        transition: background 0.2s !important;
+        box-sizing: border-box !important;
+    }
+    .xoo-wsc-ft-btn-checkout:hover { background: #2d2d50 !important; color: #fff !important; }
+    .xoo-wsc-ft-btn-cart, a.xoo-wsc-ft-btn-cart {
+        display: block !important;
+        text-align: center !important;
+        font-size: 12px !important;
+        color: #999 !important;
+        text-decoration: none !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.05em !important;
+        padding: 6px 0 !important;
+        background: none !important;
+        border: none !important;
+        cursor: pointer !important;
+    }
+    .xoo-wsc-ft-btn-cart:hover { color: #1a1a2e !important; text-decoration: underline !important; }
+    /* Overlay */
+    .xoo-wsc-overlay { background: rgba(10,10,20,0.5) !important; backdrop-filter: blur(4px) !important; }
+    /* Botón flotante */
+    .xoo-wsc-open-btn { background: #1a1a2e !important; border-radius: 50% !important; }
+    .xoo-wsc-basket-count { background: #c5a880 !important; border: 2px solid #fff !important; font-weight: 800 !important; }
+    @media (max-width: 480px) {
+        .xoo-wsc-modal { width: 100vw !important; }
+        .widget_shopping_cart_content { min-width: 100vw; }
+    }
+    </style>
+    <?php
+}
+
+/* ==========================================================================
+   AJAX — Actualizar cantidad de item en mini-cart
+   ========================================================================== */
+
+add_action( 'wp_ajax_celzimo_update_cart_qty',        'celzimo_ajax_update_cart_qty' );
+add_action( 'wp_ajax_nopriv_celzimo_update_cart_qty', 'celzimo_ajax_update_cart_qty' );
+
+function celzimo_ajax_update_cart_qty() {
+    check_ajax_referer( 'celzimo_cart_nonce', 'nonce' );
+
+    $cart_item_key = sanitize_text_field( $_POST['cart_item_key'] ?? '' );
+    $qty           = max( 0, intval( $_POST['qty'] ?? 0 ) );
+
+    if ( ! $cart_item_key ) wp_send_json_error( 'Invalid key' );
+
+    WC()->cart->set_quantity( $cart_item_key, $qty, true );
+    WC()->cart->calculate_totals();
+
+    ob_start();
+    woocommerce_mini_cart();
+    $mini_cart = ob_get_clean();
+
+    $fragments = apply_filters( 'woocommerce_add_to_cart_fragments', [
+        'div.widget_shopping_cart_content' => '<div class="widget_shopping_cart_content">' . $mini_cart . '</div>',
+    ] );
+
+    wp_send_json_success( [
+        'fragments'  => $fragments,
+        'cart_hash'  => WC()->cart->get_cart_hash(),
+        'cart_count' => WC()->cart->get_cart_contents_count(),
+    ] );
+}
+
+add_action( 'wp_ajax_celzimo_update_cart_variation',        'celzimo_ajax_update_cart_variation' );
+add_action( 'wp_ajax_nopriv_celzimo_update_cart_variation', 'celzimo_ajax_update_cart_variation' );
+
+function celzimo_ajax_update_cart_variation() {
+    check_ajax_referer( 'celzimo_cart_nonce', 'nonce' );
+
+    $cart_item_key = sanitize_text_field( $_POST['cart_item_key'] ?? '' );
+    $product_id    = intval( $_POST['product_id'] ?? 0 );
+    
+    // attributes might be passed as an object/array via POST
+    $attributes    = isset( $_POST['attributes'] ) ? wc_clean( $_POST['attributes'] ) : [];
+
+    if ( ! $cart_item_key || ! $product_id || empty( $attributes ) ) {
+        wp_send_json_error( 'Datos inválidos' );
+    }
+
+    $cart = WC()->cart;
+    $cart_item = $cart->get_cart_item( $cart_item_key );
+
+    if ( ! $cart_item ) {
+        wp_send_json_error( 'El ítem ya no está en el carrito.' );
+    }
+
+    $quantity = $cart_item['quantity'];
+
+    $data_store   = WC_Data_Store::load( 'product' );
+    $variation_id = $data_store->find_matching_product_variation(
+        wc_get_product( $product_id ),
+        $attributes
+    );
+
+    if ( ! $variation_id ) {
+        wp_send_json_error( 'Esta combinación no está disponible. Attr: ' . wp_json_encode($attributes) . ' | Prod: ' . $product_id );
+    }
+
+    $variation = wc_get_product( $variation_id );
+    if ( ! $variation || ! $variation->is_purchasable() || ! $variation->is_in_stock() ) {
+        wp_send_json_error( 'Sin stock' );
+    }
+
+    // Remove old variation and add new
+    $cart->remove_cart_item( $cart_item_key );
+    $cart->add_to_cart( $product_id, $quantity, $variation_id, $attributes );
+    $cart->calculate_totals();
+
+    ob_start();
+    woocommerce_mini_cart();
+    $mini_cart = ob_get_clean();
+
+    $fragments = apply_filters( 'woocommerce_add_to_cart_fragments', [
+        'div.widget_shopping_cart_content' => '<div class="widget_shopping_cart_content">' . $mini_cart . '</div>',
+    ] );
+
+    wp_send_json_success( [
+        'fragments'  => $fragments,
+        'cart_hash'  => WC()->cart->get_cart_hash(),
+    ] );
+}
+
+/* ==========================================================================
+   JS — Inyectar botones −/+/🗑 en cada item del mini-cart
+   ========================================================================== */
+
+add_action( 'wp_footer', 'celzimo_minicart_qty_buttons', 99 );
+function celzimo_minicart_qty_buttons() {
+    $nonce = wp_create_nonce( 'celzimo_cart_nonce' );
+    ?>
+    <style id="celzimo-qty-btns-css">
+    /* Contenedor de controles de cantidad */
+    .celzimo-qty-controls {
+        display: flex !important;
+        align-items: center !important;
+        gap: 4px !important;
+        margin-top: 8px !important;
+    }
+    /* Botón − (más claro) */
+    .celzimo-qty-btn.celzimo-qty-minus {
+        width: 30px !important;
+        height: 30px !important;
+        background: rgba(26,26,46,0.15) !important;
+        color: #1a1a2e !important;
+        border: none !important;
+        border-radius: 4px !important;
+        font-size: 20px !important;
+        font-weight: 300 !important;
+        cursor: pointer !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        padding: 0 !important;
+        line-height: 1 !important;
+        transition: background 0.15s !important;
+    }
+    .celzimo-qty-btn.celzimo-qty-minus:hover {
+        background: rgba(26,26,46,0.25) !important;
+    }
+    /* Número de cantidad */
+    .celzimo-qty-num {
+        width: 30px !important;
+        height: 30px !important;
+        border: 1px solid #e0e0e0 !important;
+        border-radius: 4px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        font-size: 13px !important;
+        font-weight: 700 !important;
+        color: #1a1a2e !important;
+        background: #fff !important;
+        min-width: 30px !important;
+        text-align: center !important;
+    }
+    /* Botón + (oscuro — navy) */
+    .celzimo-qty-btn.celzimo-qty-plus {
+        width: 30px !important;
+        height: 30px !important;
+        background: #1a1a2e !important;
+        color: #fff !important;
+        border: none !important;
+        border-radius: 4px !important;
+        font-size: 20px !important;
+        font-weight: 300 !important;
+        cursor: pointer !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        padding: 0 !important;
+        line-height: 1 !important;
+        transition: background 0.15s !important;
+    }
+    .celzimo-qty-btn.celzimo-qty-plus:hover { background: #2d2d50 !important; }
+    /* Botón basura (navy) */
+    .celzimo-qty-trash {
+        width: 30px !important;
+        height: 30px !important;
+        background: #1a1a2e !important;
+        color: #fff !important;
+        border: none !important;
+        border-radius: 4px !important;
+        cursor: pointer !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        padding: 0 !important;
+        margin-left: 2px !important;
+        transition: background 0.15s !important;
+    }
+    .celzimo-qty-trash:hover { background: #a02020 !important; }
+    .celzimo-qty-trash svg { width: 13px; height: 13px; display: block; }
+    /* Ocultar el span de cantidad original */
+    li.woocommerce-mini-cart-item .quantity.celzimo-qty-hidden { display: none !important; }
+    /* Spinner durante update */
+    .celzimo-qty-controls.loading { opacity: 0.5; pointer-events: none; }
+    </style>
+
+    <script>
+    (function($){
+        var AJAX_URL = '<?php echo esc_js( admin_url("admin-ajax.php") ); ?>';
+        var NONCE    = '<?php echo esc_js( $nonce ); ?>';
+        var trashSVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>';
+
+        function updateCartQty(cartKey, qty, $controls) {
+            $controls.addClass('loading');
+            $.post(AJAX_URL, {
+                action: 'celzimo_update_cart_qty',
+                cart_item_key: cartKey,
+                qty: qty,
+                nonce: NONCE
+            }, function(response) {
+                $controls.removeClass('loading'); // Always unfreeze locally first
+                if (response.success) {
+                    if (response.data && response.data.fragments) {
+                        $.each(response.data.fragments, function(selector, html) {
+                            $(selector).replaceWith(html);
+                        });
+                    }
+                    
+                    // Force all cart plugins (classic, Elementor, blocks) to reload
+                    $(document.body).trigger('wc_fragment_refresh');
+                    
+                    try {
+                        if (typeof wp !== 'undefined' && wp.data && wp.data.dispatch) {
+                            wp.data.dispatch('wc/store/cart').invalidateResolution('getCartData');
+                        }
+                    } catch(e) {}
+                    
+                    setTimeout(initQtyButtons, 50);
+                }
+            }).fail(function() {
+                $controls.removeClass('loading');
+            });
+        }
+
+        function initQtyButtons() {
+            $('.woocommerce-mini-cart-item').each(function() {
+                var $item = $(this);
+                if ($item.find('.celzimo-qty-controls').length) return;
+
+                var $removeBtn  = $item.find('.remove_from_cart_button');
+                var cartKey     = $removeBtn.data('cart_item_key') || $removeBtn.attr('data-cart_item_key');
+                var $qtySpan    = $item.find('.quantity');
+                var qtyText     = $qtySpan.text().trim();
+                var currentQty  = parseInt(qtyText.match(/^(\d+)/)?.[1]) || 1;
+                var $productLink = $item.find('a:not(.remove)').first();
+
+                if (!cartKey) return;
+
+                // --- LAYOUT RESTRUCTURE ---
+                // Mover la imagen para separarla del texto del link
+                var $img = $productLink.find('img');
+                if ($img.length && !$item.hasClass('celzimo-restructured')) {
+                    $item.addClass('celzimo-restructured');
+                    
+                    var linkHref = $productLink.attr('href');
+                    var $imgContainer = $('<a href="' + linkHref + '" class="celzimo-mc-img"></a>');
+                    $imgContainer.append($img);
+                    
+                    var $infoContainer = $('<div class="celzimo-mc-info"></div>');
+                    $productLink.addClass('celzimo-mc-title');
+                    
+                    $infoContainer.append($productLink, $qtySpan);
+                    $item.empty().append($removeBtn, $imgContainer, $infoContainer);
+                }
+
+                $qtySpan.addClass('celzimo-qty-hidden');
+
+                var trashSVG = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"></path><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>';
+                
+                var $controls = $('<div class="celzimo-qty-controls"></div>');
+                var $minus    = $('<button class="celzimo-qty-btn celzimo-qty-minus" type="button" aria-label="Disminuir cantidad">−</button>');
+                var $num      = $('<span class="celzimo-qty-num">' + currentQty + '</span>');
+                var $plus     = $('<button class="celzimo-qty-btn celzimo-qty-plus" type="button" aria-label="Aumentar cantidad">+</button>');
+                var $trash    = $('<button class="celzimo-qty-trash" type="button" aria-label="Eliminar producto">' + trashSVG + '</button>');
+
+                $controls.append($minus, $num, $plus, $trash);
+                
+                var $targetContainer = $item.find('.celzimo-mc-info');
+                if ($targetContainer.length) {
+                    $targetContainer.append($controls);
+                } else {
+                    $qtySpan.after($controls);
+                }
+
+                $minus.on('click', function(e) {
+                    e.preventDefault();
+                    var q = parseInt($num.text()) - 1;
+                    if (q <= 0) q = 0;
+                    $num.text(q);
+                    updateCartQty(cartKey, q, $controls);
+                });
+
+                $plus.on('click', function(e) {
+                    e.preventDefault();
+                    var q = parseInt($num.text()) + 1;
+                    $num.text(q);
+                    updateCartQty(cartKey, q, $controls);
+                });
+
+                $trash.on('click', function(e) {
+                    e.preventDefault();
+                    updateCartQty(cartKey, 0, $controls);
+                });
+            });
+        }
+
+        function initSwatches() {
+            $('.celzimo-mc-swatch').off('click').on('click', function(e) {
+                e.preventDefault();
+                var $btn = $(this);
+                if ($btn.hasClass('selected')) return;
+
+                var $container = $btn.closest('.celzimo-mc-swatches-container');
+                var cartKey = $container.data('cart_item_key');
+                var productId = $container.data('product_id');
+                
+                $btn.siblings().removeClass('selected');
+                $btn.addClass('selected');
+
+                var attributes = {};
+                var allSelected = true;
+                $container.find('.celzimo-mc-attr-row').each(function() {
+                    var $selectedSwatch = $(this).find('.celzimo-mc-swatch.selected');
+                    if ($selectedSwatch.length) {
+                        attributes[$selectedSwatch.data('attribute')] = $selectedSwatch.data('value');
+                    } else {
+                        allSelected = false;
+                    }
+                });
+
+                if (!allSelected) return;
+
+                $container.addClass('loading');
+                $.post(AJAX_URL, {
+                    action: 'celzimo_update_cart_variation',
+                    cart_item_key: cartKey,
+                    product_id: productId,
+                    attributes: attributes,
+                    nonce: NONCE
+                }, function(response) {
+                    $container.removeClass('loading');
+                    if (response.success) {
+                        if (response.data && response.data.fragments) {
+                            $.each(response.data.fragments, function(selector, html) {
+                                $(selector).replaceWith(html);
+                            });
+                        }
+                        $(document.body).trigger('wc_fragment_refresh');
+                        try {
+                            if (typeof wp !== 'undefined' && wp.data && wp.data.dispatch) {
+                                wp.data.dispatch('wc/store/cart').invalidateResolution('getCartData');
+                            }
+                        } catch(e) {}
+                    } else {
+                        var msg = response.data || 'Error al actualizar.';
+                        if (msg === 'Sin stock') msg = 'La variación seleccionada se encuentra sin stock.';
+                        alert(msg);
+                        $(document.body).trigger('wc_fragment_refresh');
+                    }
+                }).fail(function() {
+                    $container.removeClass('loading');
+                    alert('Error de conexión');
+                });
+            });
+        }
+
+        // Re-inicializar después de que el mini-cart se refresque via AJAX
+        $(document.body).on('wc_fragments_refreshed wc_fragments_loaded', function() {
+            initQtyButtons();
+            initSwatches();
+        });
+
+        // Re-inicializar si se abre un widget dropdown
+        $(document).on('click', '.cart-contents, .wc-block-mini-cart__button, [data-block-name="woocommerce/mini-cart"]', function() {
+            setTimeout(function() {
+                initQtyButtons();
+                initSwatches();
+            }, 300);
+        });
+
+        // Función SEGURA para ocultar el footer redundante sin congelar el navegador
+        function hideRedundantFooterSafe() {
+            // Eliminar clases nativas del block
+            $('.wc-block-mini-cart__footer, .wc-block-components-totals-wrapper').hide();
+            
+            // Buscar por texto y ocultar con precisión
+            $('a, button').filter(function() {
+                var t = $(this).text().trim().toUpperCase();
+                return t === 'PROCEDER AL PAGO' || t === 'PROCEED TO CHECKOUT';
+            }).each(function() {
+                $(this).hide();
+                var $actions = $(this).closest('.wc-block-mini-cart__footer-actions');
+                if ($actions.length) $actions.hide();
+            });
+            
+            $('span, div, p').filter(function() {
+                return $(this).text().trim() === 'Impuestos calculados en el checkout.';
+            }).hide();
+        }
+
+        $(document).ready(function() {
+            initQtyButtons();
+            initSwatches();
+            hideRedundantFooterSafe();
+            setInterval(hideRedundantFooterSafe, 1000);
+        });
+
+    })(jQuery);
+    </script>
+    <?php
+}
+
+add_action('wp_head', 'celzimo_minicart_swatch_css');
+function celzimo_minicart_swatch_css() {
+    ?>
+    <style>
+    /* Bypass Cache - Mini Cart Restructured Layout */
+    li.woocommerce-mini-cart-item.celzimo-restructured {
+        position: relative !important;
+        display: flex !important;
+        align-items: flex-start !important;
+        padding: 15px 0 !important;
+        border-bottom: 1px solid #f1f1f1 !important;
+    }
+    .celzimo-mc-img {
+        width: 60px !important;
+        height: auto !important;
+        margin-right: 15px !important;
+        flex-shrink: 0 !important;
+    }
+    .celzimo-mc-info {
+        flex: 1 !important;
+        padding-right: 60px !important;
+    }
+    .celzimo-mc-price-right {
+        position: absolute !important;
+        right: 14px !important;
+        bottom: 20px !important;
+        font-weight: 600 !important;
+        font-size: 0.95rem !important;
+        color: #111 !important;
+        display: block !important;
+    }
+    .celzimo-mc-swatches-container {
+        margin-top: 10px;
+        margin-bottom: 10px;
+    }
+    .celzimo-mc-attr-row {
+        margin-bottom: 5px;
+        display: flex !important;
+        align-items: center !important;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+    .celzimo-mc-attr-label {
+        font-size: 0.75rem;
+        color: #666;
+        text-transform: uppercase;
+        font-weight: 500;
+    }
+    .celzimo-mc-attr-options {
+        display: flex !important;
+        gap: 4px;
+        flex-wrap: wrap;
+    }
+    button.celzimo-mc-swatch {
+        background-color: #fff !important;
+        background-size: cover !important;
+        background-position: center !important;
+        border: 1px solid #e5e7eb !important;
+        padding: 4px 8px !important;
+        font-size: 0.7rem !important;
+        cursor: pointer !important;
+        border-radius: 2px !important;
+        color: #111 !important;
+        transition: all 0.2s !important;
+        appearance: none !important;
+        -webkit-appearance: none !important;
+        display: inline-block !important;
+        margin-right: 4px !important;
+        min-width: 28px !important;
+        text-align: center !important;
+        line-height: 1 !important;
+    }
+    button.celzimo-mc-swatch:hover {
+        border-color: #000 !important;
+    }
+    button.celzimo-mc-swatch.selected {
+        border-color: #000 !important;
+        background: #000 !important;
+        color: #fff !important;
+    }
+    .celzimo-mc-swatches-container.loading {
+        opacity: 0.5;
+        pointer-events: none;
+    }
+    </style>
+    <?php
+}
+
+/* ==========================================================================
+   WOOCOMMERCE WRAPPER
+   ========================================================================== */
+
+if ( class_exists( 'WooCommerce' ) ) {
+    remove_action( 'woocommerce_before_main_content', 'woocommerce_output_content_wrapper', 10 );
+    remove_action( 'woocommerce_after_main_content',  'woocommerce_output_content_wrapper_end', 10 );
+
+    function celzimo_theme_wrapper_start() {
+        echo '<div class="container main-content-wrapper" style="padding-top:40px;padding-bottom:80px;">';
+    }
+    function celzimo_theme_wrapper_end() {
+        echo '</div>';
+    }
+    add_action( 'woocommerce_before_main_content', 'celzimo_theme_wrapper_start', 10 );
+    add_action( 'woocommerce_after_main_content',  'celzimo_theme_wrapper_end',   10 );
+}
+
+/* ==========================================================================
+   HELPER — CATEGORY LINK
+   ========================================================================== */
+
+function celzimo_get_category_link( $slug ) {
+    if ( ! class_exists( 'WooCommerce' ) ) return home_url( '/tienda/' );
+    $term = get_term_by( 'slug', $slug, 'product_cat' );
+    if ( $term && ! is_wp_error( $term ) ) return get_term_link( $term );
+    return home_url( '/categoria-producto/' . $slug . '/' );
+}
+
+/* ==========================================================================
+   UNDER CONSTRUCTION — DESACTIVADO
+   ========================================================================== */
+
+function celzimo_under_construction() {
+    return; // Sitio abierto al público
+}
+add_action( 'template_redirect', 'celzimo_under_construction', 1 );
+
+/* ==========================================================================
+   TRADUCCIONES — "Proceder al pago" → "FINALIZAR COMPRA"
+   ========================================================================== */
+
+add_filter( 'gettext', 'celzimo_translate_checkout_btn', 20, 3 );
+function celzimo_translate_checkout_btn( $translated, $text, $domain ) {
+    $replacements = [
+        'Proceed to checkout'          => 'FINALIZAR COMPRA',
+        'Proceed to Checkout'          => 'FINALIZAR COMPRA',
+        'Proceder al pago'             => 'FINALIZAR COMPRA',
+        'Proceed to payment'           => 'FINALIZAR COMPRA',
+        'Place order'                  => 'FINALIZAR COMPRA',
+    ];
+    return $replacements[ $text ] ?? $translated;
+}
+
+/* ==========================================================================
+   MINI-CART LAYOUT FIX — Imagen al lado del nombre (no debajo)
+   + Corrección botones de la página carrito
+   ========================================================================== */
+
+add_action( 'wp_head', 'celzimo_minicart_layout_fix', 100 );
+function celzimo_minicart_layout_fix() {
+    ?>
+    <style id="celzimo-minicart-layout">
+
+    /* ---- ITEM: Contenedor flex ---- */
+    li.woocommerce-mini-cart-item.mini_cart_item,
+    li.woocommerce-mini-cart-item {
+        display: flex !important;
+        align-items: flex-start !important;
+        gap: 16px !important;
+        padding: 16px 36px 16px 20px !important; /* right padding para el botón × */
+        border-bottom: 1px solid #f0f0f0 !important;
+        position: relative !important;
+        list-style: none !important;
+    }
+
+    /* Botón eliminar × — posición absoluta arriba derecha */
+    li.woocommerce-mini-cart-item .remove,
+    li.woocommerce-mini-cart-item .remove_from_cart_button {
+        position: absolute !important;
+        top: 12px !important;
+        right: 14px !important;
+        font-size: 18px !important;
+        color: #ccc !important;
+        text-decoration: none !important;
+        line-height: 1 !important;
+        background: none !important;
+        border: none !important;
+        cursor: pointer !important;
+        font-weight: 400 !important;
+    }
+    li.woocommerce-mini-cart-item .remove:hover { color: #e53935 !important; }
+
+    /* Imagen — separada gracias a JS */
+    .celzimo-mc-img {
+        display: block !important;
+        width: 72px !important;
+        height: 72px !important;
+        flex-shrink: 0 !important;
+    }
+    .celzimo-mc-img img {
+        width: 72px !important;
+        height: 72px !important;
+        object-fit: cover !important;
+        border-radius: 8px !important;
+        border: 1px solid #eee !important;
+        display: block !important;
+    }
+
+    /* Contenedor de info (Título, Precio, Controles) */
+    .celzimo-mc-info {
+        flex: 1 !important;
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: center !important;
+    }
+
+    /* Enlace con nombre */
+    .celzimo-mc-title {
+        font-size: 11px !important;
+        font-weight: 700 !important;
+        color: #1a1a2e !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.04em !important;
+        text-decoration: none !important;
+        line-height: 1.35 !important;
+        display: block !important;
+        margin-bottom: 4px !important;
+    }
+    .celzimo-mc-title:hover { color: #c5a880 !important; }
+
+    /* Cantidad original (si aplica) y precio */
+    .woocommerce-mini-cart-item .quantity {
+        font-size: 12px !important;
+        color: #888 !important;
+        display: block !important;
+    }
+    .celzimo-qty-hidden {
+        display: none !important;
+    }
+    .woocommerce-mini-cart-item .quantity .woocommerce-Price-amount {
+        font-weight: 700 !important;
+        color: #1a1a2e !important;
+        font-size: 13px !important;
+    }
+
+    /* ---- PÁGINA CARRITO — botón "PROCEDER AL PAGO" / "FINALIZAR COMPRA" ---- */
+    .wc-proceed-to-checkout .checkout-button,
+    .wc-proceed-to-checkout a.checkout-button,
+    a.checkout-button.button.alt.wc-forward {
+        display: block !important;
+        width: 100% !important;
+        background: #1a1a2e !important;
+        color: #fff !important;
+        text-align: center !important;
+        font-family: 'Inter', sans-serif !important;
+        font-size: 14px !important;
+        font-weight: 700 !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.08em !important;
+        padding: 16px 24px !important;
+        border-radius: 6px !important;
+        border: none !important;
+        cursor: pointer !important;
+        text-decoration: none !important;
+        transition: background 0.2s, transform 0.1s !important;
+        box-sizing: border-box !important;
+        margin-top: 10px !important;
+    }
+    .wc-proceed-to-checkout .checkout-button:hover,
+    a.checkout-button.button.alt.wc-forward:hover {
+        background: #2d2d50 !important;
+        color: #fff !important;
+        transform: translateY(-1px) !important;
+        text-decoration: none !important;
+    }
+
+    /* =====================================================================
+       ELIMINAR FOOTER DUPLICADO (Bloque vs Clásico)
+       ===================================================================== */
+    /* 1. Ocultar el footer nativo del bloque de WooCommerce (el bloque azul inferior) */
+    .wc-block-mini-cart__footer,
+    .wc-block-components-totals-wrapper,
+    .wp-block-woocommerce-mini-cart-contents .wc-block-components-totals-wrapper {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+        height: 0 !important;
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+
+    /* 2. Asegurar que nuestro footer clásico se comporte como el footer principal del drawer */
+    .woocommerce-mini-cart__total {
+        padding: 24px 20px 16px !important;
+        margin: 0 !important;
+        background: #fff !important;
+        position: relative !important;
+        z-index: 10 !important;
+    }
+    .woocommerce-mini-cart__buttons {
+        padding: 0 20px 24px !important;
+        background: #fff !important;
+        position: relative !important;
+        z-index: 10 !important;
+    }
+
+    </style>
+    <?php
+}
+add_action( 'wp_ajax_celzimo_debug_variation', 'celzimo_debug_variation' );
+add_action( 'wp_ajax_nopriv_celzimo_debug_variation', 'celzimo_debug_variation' );
+function celzimo_debug_variation() {
+    error_log('AJAX Attributes: ' . print_r(['attributes'], true));
+    wp_send_json_success();
+}
+add_action( 'wp_ajax_celzimo_debug_variation2', 'celzimo_debug_variation2' );
+add_action( 'wp_ajax_nopriv_celzimo_debug_variation2', 'celzimo_debug_variation2' );
+function celzimo_debug_variation2() {
+    error_log('DEBUG POST: ' . print_r(, true));
+    wp_send_json_success();
+}
